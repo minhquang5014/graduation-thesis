@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+from white_and_black import detect_white_and_black
 class OpenCVCapture:
     def __init__(self, camera_index=0, width=640, height=480):
         self.camera_index = camera_index
@@ -20,54 +20,21 @@ class OpenCVCapture:
 
         self.video_loop()
 
-    def video_loop(self):
+    def video_loop(self, enable_detection=True):
         while True:
             ret, frame = self.capture.read()
             if not ret:
                 print("Failed to capture image")
                 break
+            frame=cv2.flip(frame, 1)
 
-            frame = cv2.flip(frame, 1)
-            hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-            masks = [
-                (cv2.inRange(hsv, self.lower_black, self.upper_black),"Black Object", (0, 0, 0)),
-                (cv2.inRange(hsv, self.lower_white, self.upper_white), "White Object", (0, 0, 200))
-            ]
-
-            for mask, label, color in masks:
-                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                for contour in contours:
-                    if cv2.contourArea(contour) > 3000:
-                        x, y, w, h = cv2.boundingRect(contour)
-                        cv2.rectangle(frame, (x, y), (x + w, y + h), color, 3)  # Draw rectangle
-                        cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                        break
-
-            # Find contours for black
-            # contours_black, _ = cv2.findContours(mask_black, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            # for contour in contours_black:
-            #     area = cv2.contourArea(contour)
-            #     if area > 1500:
-            #         x, y, w, h = cv2.boundingRect(contour)
-            #         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 0), 2)
-            #         cv2.putText(frame, "Black Object", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
-
-            # Find contours for white
-            # contours_white, _ = cv2.findContours(mask_white, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            # for contour in contours_white:
-            #     area = cv2.contourArea(contour)
-            #     if area > 1500:
-            #         x, y, w, h = cv2.boundingRect(contour)
-            #         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
-            #         cv2.putText(frame, "White Object", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
+            if (enable_detection==True):
+                frame = detect_white_and_black(frame)
+                
             # Show result
             cv2.imshow("Color Detection", frame)
-
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
         self.capture.release()
         cv2.destroyAllWindows()
 
