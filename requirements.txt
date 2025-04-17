@@ -1,4 +1,6 @@
 opencv-python
 numpy
-streamlit
 flask
+streamlit
+streamlit_webrtc
+av
