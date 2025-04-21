@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+
 lower_black = np.array([0, 0, 0])
 upper_black = np.array([180, 255, 50])  # dark values
 lower_white = np.array([0, 0, 200])

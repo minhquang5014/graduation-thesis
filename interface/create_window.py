@@ -2,6 +2,11 @@ import customtkinter as ctk
 import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
+try:
+    from webcam.exit_webcam import exit_webcam
+except ImportError:
+    print("Import error")
+from put_label_camera import label_to_put_video, update_frame
 
 class CreateWindow:
     def __init__(self, *args, **kwargs):
@@ -14,33 +19,23 @@ class CreateWindow:
 
         self.frame = ctk.CTkFrame(master=self.root, fg_color="#ffd7b5")
         self.frame.pack(fill="both", expand=True)
-        # self.label_to_put_video()
-        # Bind ESC to exit
-        self.root.bind('<Escape>', self.exit_fullscreen)
-
-        # Start the webcam feed
-        self.capture = cv2.VideoCapture(0)
-        self.update_frame()
-
-        self.root.mainloop()
-    def label_to_put_video(self, width=640, height=480):
-        self.video_label = tk.Label(self.frame, bg="black")
-        self.video_label.place(x=0, y=0, relwidth=width/self.screen_width, relheight=height/self.screen_height)
-    def update_frame(self):
-        ret, frame = self.capture.read()
-        if ret:
-            frame = cv2.flip(frame, 1)
-            cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-            img = Image.fromarray(cv2image)
-            imgtk = ImageTk.PhotoImage(image=img)
-            self.video_label.imgtk = imgtk
-            self.video_label.configure(image=imgtk)
-        
-        # Repeat after 10 ms
-        self.root.after(10, self.update_frame)
 
     def exit_fullscreen(self, event):
-        self.capture.release()
         self.root.destroy()
 
-CreateWindow()
+# CreateWindow()
+
+class ExtentedWindow(CreateWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.capture = cv2.VideoCapture(0)
+        self.video_label = label_to_put_video(self.frame, self.screen_width, self.screen_height)
+        update_frame(self.capture, self.video_label, self.root)
+        self.root.bind('<Escape>', self.exit_fullscreen)
+        self.root.mainloop()
+    def exit_fullscreen(self, event):
+        self.capture.release()
+        cv2.destroyAllWindows()
+        self.root.destroy()
+
+ExtentedWindow()

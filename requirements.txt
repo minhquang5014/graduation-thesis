@@ -4,3 +4,6 @@ flask
 streamlit
 streamlit_webrtc
 av
+pymodbus
+customtkinter
+tk

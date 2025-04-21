@@ -1,5 +1,5 @@
 from flask import Flask, Response, render_template
-from webcam import OpenCVCapture
+from webcam.webcam import OpenCVCapture
 import os
 
 app = Flask(__name__)

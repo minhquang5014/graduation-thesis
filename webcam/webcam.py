@@ -1,19 +1,13 @@
 import cv2
 import numpy as np
-from white_and_black import detect_white_and_black
+from webcam.white_and_black import detect_white_and_black
 from utilities.encode_frame import encode_frame
+from webcam.exit_webcam import exit_webcam
 class OpenCVCapture:
     def __init__(self, camera_index=0, width=640, height=480):
         self.camera_index = camera_index
         self.width = width
         self.height = height
-
-        # Define HSV ranges for black and white
-        self.lower_black = np.array([0, 0, 0])
-        self.upper_black = np.array([180, 255, 50])  # dark values
-
-        self.lower_white = np.array([0, 0, 200])
-        self.upper_white = np.array([180, 30, 255])  # bright values
 
         self.capture = cv2.VideoCapture(self.camera_index)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
@@ -40,8 +34,7 @@ class OpenCVCapture:
             except Exception as e:
                 print(f"Error: {e}")
             finally:
-                self.capture.release()
-                cv2.destroyAllWindows()
+                exit_webcam(self.capture)
 
     def flask_stream(self, enable_detection=True):
         while True:
@@ -57,4 +50,4 @@ class OpenCVCapture:
             
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        self.capture.release()
+        exit_webcam(self.capture)
