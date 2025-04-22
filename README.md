@@ -46,7 +46,7 @@ Khi pretrained-model chạy mượt mà, chúng ta thử cắm kết nối PLC v
 python PLC/plc_connection.py
 ```
 
-Để chạy cả giao diện và model, chúng ta chạy 
+Để chạy cả giao diện và model:
 
 ```sh
 python main.py

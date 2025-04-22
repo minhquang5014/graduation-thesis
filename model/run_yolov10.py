@@ -9,7 +9,7 @@ from supervision import Detections, BoxAnnotator
 colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 
 class ObjectDetection:
-    def __init__(self, capture_index):
+    def __init__(self, capture_index=0):
         self.capture_index = capture_index
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         print(f"Device used: {self.device}")
@@ -92,6 +92,6 @@ class ObjectDetection:
         cv2.destroyAllWindows()
         
 # detector = ObjectDetection(capture_index=0)
-detector = ObjectDetection("C:/Users/acer/Downloads/traffic_video.mp4")
+detector = ObjectDetection()
 
 detector()
