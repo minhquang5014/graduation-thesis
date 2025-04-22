@@ -14,7 +14,7 @@ class PLCConnection:
         try:
             connect_status = self.client.connect()
             print(connect_status)
-            print(f"Connected to PLC at {self.host}:{self.port}")
+            print(f"Connection to {self.host}:{self.port} is {'successful' if connect_status else 'failed'}")
         except ConnectionException as e:
             print(f"Failed to connect to PLC: {e}")
     def write(self, address, value):

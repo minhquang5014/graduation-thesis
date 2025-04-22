@@ -7,3 +7,4 @@ av
 pymodbus
 customtkinter
 tk
+supervision

@@ -2,11 +2,6 @@ import customtkinter as ctk
 import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
-try:
-    from webcam.exit_webcam import exit_webcam
-except ImportError:
-    print("Import error")
-from put_label_camera import label_to_put_video, update_frame
 
 class CreateWindow:
     def __init__(self, *args, **kwargs):
@@ -25,17 +20,17 @@ class CreateWindow:
 
 # CreateWindow()
 
-class ExtentedWindow(CreateWindow):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.capture = cv2.VideoCapture(0)
-        self.video_label = label_to_put_video(self.frame, self.screen_width, self.screen_height)
-        update_frame(self.capture, self.video_label, self.root)
-        self.root.bind('<Escape>', self.exit_fullscreen)
-        self.root.mainloop()
-    def exit_fullscreen(self, event):
-        self.capture.release()
-        cv2.destroyAllWindows()
-        self.root.destroy()
+# class ExtentedWindow(CreateWindow):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.capture = cv2.VideoCapture(0)
+#         self.video_label = label_to_put_video(self.frame, self.screen_width, self.screen_height)
+#         update_frame(self.capture, self.video_label, self.root)
+#         self.root.bind('<Escape>', self.exit_fullscreen)
+#         self.root.mainloop()
+#     def exit_fullscreen(self, event):
+#         self.capture.release()
+#         cv2.destroyAllWindows()
+#         self.root.destroy()
 
-ExtentedWindow()
+# ExtentedWindow()
