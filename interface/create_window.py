@@ -8,12 +8,15 @@ class CreateWindow:
         self.root = ctk.CTk()
         self.screen_width = self.root.winfo_screenwidth()
         self.screen_height = self.root.winfo_screenheight()
-        self.root.attributes('-fullscreen', True)
+        
         self.root.title("Color Detection")
         self.root.configure(bg="black")
 
         self.frame = ctk.CTkFrame(master=self.root, fg_color="#ffd7b5")
         self.frame.pack(fill="both", expand=True)
+
+        self.root.update()
+        self.root.attributes('-fullscreen', True)
 
     def exit_fullscreen(self, event):
         self.root.destroy()
