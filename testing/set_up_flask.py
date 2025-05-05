@@ -1,6 +1,5 @@
 from flask import Flask, Response, render_template
 from webcam.webcam import OpenCVCapture
-import os
 
 app = Flask(__name__)
 @app.route('/')
