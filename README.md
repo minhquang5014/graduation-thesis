@@ -17,9 +17,10 @@ nvidia-smi
 Nếu máy bạn có CUDA, cài đặt pytorch cuda theo cách sau:
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu121
-pip install torch --index-url https://download.pytorch.org/whl/cu118
-pip install torch --index-url https://download.pytorch.org/whl/cu124
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
 Sau khi cài đặt xong CUDA, chúng ta kiểm tra xem máy đã có torch hỗ trợ CUDA chưa:
