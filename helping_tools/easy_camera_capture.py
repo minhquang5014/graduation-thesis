@@ -13,7 +13,7 @@ class Webcam:
         self.window = window
         self.window_title = window_title
 
-        self.video_capture = 1
+        self.video_capture = 0
         self.vid = cv2.VideoCapture(self.video_capture)
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
@@ -40,7 +40,7 @@ class Webcam:
         self.is_recording = False
         self.out = None
         
-        self.directories = "images_and_video"
+        self.directories = "images"
         if not os.path.exists(self.directories):
             os.makedirs(self.directories)
         self.update()
