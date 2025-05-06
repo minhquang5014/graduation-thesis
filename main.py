@@ -15,14 +15,21 @@ class MainWindow(create_window.CreateWindow):
             put_label_camera.update_frame(self.capture, self.video_label, self.root)
         except Exception as e:
             print(e)
+
+        # call the Second Frame object
         second_frame.SecondFrame(
             screen_width=self.screen_width, 
             video_frame_width=self.label_width, 
             screen_height=self.screen_height, 
-            video_frame_height=self.label_height
+            video_frame_height=self.label_height, 
+            fixed_button_size = False
         )
+
+        # press Esp to exit
         self.root.bind('<Escape>', self.exit_fullscreen)
         self.root.mainloop()
+
+
     def exit_fullscreen(self, event):
         self.capture.release()
         cv2.destroyAllWindows()

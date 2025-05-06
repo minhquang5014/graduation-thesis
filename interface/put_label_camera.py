@@ -2,7 +2,13 @@ import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
 
-def label_to_put_video(frame, screen_width, screen_height, label_width=640, label_height=480):
+def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=False):
+    if fixed_video_label:
+        label_width = 640
+        label_height = 480
+    else:
+        label_width = screen_width / 1.953
+        label_height = screen_height / 1.354
     video_label = tk.Label(frame, bg="black")
     video_label.place(x=0, y=0, relwidth=label_width/screen_width, relheight=label_height/screen_height)
     return video_label, label_width, label_height

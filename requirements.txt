@@ -8,3 +8,4 @@ pymodbus
 customtkinter
 tk
 supervision
+pillow

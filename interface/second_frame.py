@@ -4,12 +4,13 @@ from PIL import Image
 class SecondFrame():
     def __init__(self,screen_width: ctk.CTk.winfo_screenwidth, 
                  video_frame_width, screen_height:ctk.CTk.winfo_screenheight, 
-                 video_frame_height, fg_color = "#ffd7b5", *args, **kwargs):
+                 video_frame_height, fixed_button_size:bool, fg_color = "#ffd7b5",*args, **kwargs):
         self.screen_width = screen_width 
         self.video_frame_width = video_frame_width
         self.screen_height = screen_height
         self.video_frame_height = video_frame_height
         self.fg_color = fg_color
+        self.fixed_button_size = fixed_button_size
         print(self.video_frame_height)
         self.second_frame = ctk.CTkFrame(master=None, fg_color=self.fg_color)
         self.second_frame_width = screen_width - video_frame_width
@@ -34,10 +35,16 @@ class SecondFrame():
                             relwidth= self.button_frame_width / self.second_frame_width,
                             relheight= 1/5 
                             )
+        if self.fixed_button_size:
+            self.width = 240
+            self.height = 60
+        else:
+            self.width = self.button_frame_width / 4
+            self.height = self.button_frame_height / 3
         self.start_button = ctk.CTkButton(self.button_frame, 
                                           text="START",
-                                          width = self.button_frame_width / 4,
-                                          height = self.button_frame_height / 3,
+                                          width = self.width,
+                                          height = self.height,
                                           fg_color = "green",
                                             corner_radius = 50, 
                                             hover_color="gray", 
@@ -47,8 +54,8 @@ class SecondFrame():
         self.start_button.place(relx = 7/24, rely = 0.5, anchor = tk.CENTER)
         self.stop_button = ctk.CTkButton(self.button_frame, 
                                           text="STOP",
-                                          width = self.button_frame_width / 4,
-                                          height = self.button_frame_height / 3,
+                                          width = self.width,
+                                          height = self.height,
                                           fg_color = "red",
                                             corner_radius = 50, 
                                             hover_color="gray", 
