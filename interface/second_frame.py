@@ -11,7 +11,6 @@ class SecondFrame():
         self.video_frame_height = video_frame_height
         self.fg_color = fg_color
         self.fixed_button_size = fixed_button_size
-        print(self.video_frame_height)
         self.second_frame = ctk.CTkFrame(master=None, fg_color=self.fg_color)
         self.second_frame_width = screen_width - video_frame_width
         self.second_frame.place(relx=video_frame_width/screen_width,
@@ -28,8 +27,6 @@ class SecondFrame():
         self.button_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color)
         self.button_frame_width = 8/12 * self.second_frame_width
         self.button_frame_height = 1/5 * self.video_frame_height
-        print(self.button_frame_width, self.button_frame_height)
-        print(self.button_frame_width / 4, self.button_frame_height / 3)
         self.button_frame.place(relx=0,
                             rely=0,
                             relwidth= self.button_frame_width / self.second_frame_width,

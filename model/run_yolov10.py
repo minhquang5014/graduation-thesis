@@ -19,7 +19,7 @@ class ObjectDetection:
         self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
         
     def load_model(self):
-        model = YOLO("yolov10s.pt")
+        model = YOLO("model/yolov10s.pt")
         model.fuse()
         return model
     def predict(self, frame):
