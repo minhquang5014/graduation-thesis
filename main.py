@@ -2,7 +2,7 @@ from interface import create_window, second_frame, third_frame, fourth_frame
 from interface import put_label_camera
 import cv2
 import customtkinter as ctk
-class MainWindow(create_window.CreateWindow):
+class MainWindow(create_window.FullscreenWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
