@@ -1,30 +1,37 @@
-from pymodbus.client import ModbusTcpClient as mbc
+from pymodbus.client.tcp import ModbusTcpClient as mbc
 from pymodbus.exceptions import ConnectionException
 
-connect_status = False
-
 class PLCConnection:
-    global connect_status
     def __init__(self, host='192.168.0.1', port=502):
         self.host = host
         self.port = port
-        self.client = mbc(host = self.host, port = self.port)
-        self.UNIT = 0x1
+        self.client = mbc(host=self.host, port=self.port)
+        self.connect_status = False
+
     def connectPLC(self):
         try:
-            connect_status = self.client.connect()
-            print(connect_status)
-            print(f"Connection to {self.host}:{self.port} is {'successful' if connect_status else 'failed'}")
+            self.connect_status = self.client.connect()
+            print(self.connect_status)
+            print(f"Connection to {self.host}:{self.port} is {'successful' if self.connect_status else 'failed'}")
         except ConnectionException as e:
             print(f"Failed to connect to PLC: {e}")
+
     def write(self, address, value):
-        if connect_status:
-            self.client.write_register(address, value, unit=self.UNIT)
+        if self.connect_status:
+            # Không sử dụng 'unit' trong pymodbus 3.x
+            self.client.write_registers(address, [value])  # Dùng write_registers thay vì write_register
+        else:
+            print("Not connected. Cannot write.")
+
     def read(self, address, count=1):
-        if connect_status:
-            result = self.client.read_holding_registers(address, count, unit=self.UNIT)
-            return result.registers if result.isError() == False else None
+        if self.connect_status:
+            # Không sử dụng 'unit' trong pymodbus 3.x
+            result = self.client.read_holding_registers(address, count)
+            return result.registers if not result.isError() else None
+        else:
+            print("Not connected. Cannot read.")
+            return None
+
     def disconnectPLC(self):
         self.client.close()
-
-PLCConnection().connectPLC()
+        self.connect_status = False
