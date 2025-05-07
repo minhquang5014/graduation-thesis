@@ -20,7 +20,7 @@ class SecondFrame():
                             )
         self.putting_buttons_and_lights()
         self.putting_group_name()
-        self.putting_logo()
+        # self.putting_logo()
         self.second_frame.update()
 
     def putting_buttons_and_lights(self):
