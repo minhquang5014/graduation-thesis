@@ -13,6 +13,10 @@ for idx, filename in enumerate(sorted(images), start=1):
     new_name = f"{idx}{ext}"
     old_path = os.path.join(folder_path, filename)
     new_path = os.path.join(folder_path, new_name)
-    os.rename(old_path, new_path)
+    try:
+        os.rename(old_path, new_path)
+    except FileExistsError:
+        print(f"filename {idx} has been renamed, continue to next one")
+        continue
 
 print(f"Renamed {len(images)} files.")
