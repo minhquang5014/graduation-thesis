@@ -22,19 +22,19 @@ class ThirdFrame():
       self.third_frame.update()
 
    def lights_system_to_detect_failure(self):
+      self.third_frame_height = self.screen_height - self.video_frame_height
       self.lights_frame = ctk.CTkFrame(self.third_frame, 
                                        fg_color=self.fg_color, 
                                        border_color="black",
                                        border_width=2, corner_radius = 10)
       
       self.lights_frame_width = self.video_frame_width - (8/64 * self.video_frame_width * 2)
-      self.lights_frame_height = self.video_frame_height - (2/64 * (self.screen_height - self.video_frame_height) * 2)
-
+      self.lights_frame_height = self.third_frame_height - (4/64 * self.third_frame_height * 2)
       self.lights_frame.place(relx = 8/64, 
-                              rely = 2/64,
+                              rely = 4/64,
                               relwidth = self.lights_frame_width / self.video_frame_width,
-                              relheight = self.lights_frame_height / self.video_frame_height,
-                              )
+                              relheight = self.lights_frame_height / self.third_frame_height
+      )
 
       self.label = ctk.CTkLabel(self.lights_frame, text = "PLC Output", 
                                        text_color = "orange", 
@@ -44,52 +44,63 @@ class ThirdFrame():
                                        )
       self.label.place(relx=0, rely= 0, relwidth = 1, relheight = 1/6)
       self.canvas_list = []
-      bg_for_canvas = self.fg_color
 
-      # create 6 canvas for output lighting system
-      for i in range(6):
-         self.light = ctk.CTkCanvas(self.lights_frame,
-                                       bg = bg_for_canvas, 
-                                       highlightthickness = 0,
-                                       )
-         self.canvas_list.append(self.light)
-
-      self.lights_canvas_height = self.lights_frame_height * 5/6 
-      self.lights_canvas_y = self.lights_frame_height * (1/6 + 1/64)
-
-      self.canvas_list[0].place(relx = 1/15, 
-                        rely = self.lights_canvas_y / self.lights_frame_height,
-                        relwidth= 1/5,
-                        relheight= 1/3)
+      # create 4 canvas for output lighting system
+      for i in range(4):
+         self.canvas = ctk.CTkCanvas(self.lights_frame,
+                                 bg = self.fg_color, 
+                                 highlightthickness = 0, 
+                                 )
+         self.canvas_list.append(self.canvas)
       
-      self.canvas_list[1].place(relx = 6/15,
-                                rely = 1/6 + 1/64,
-                                relwidth= 1/5,
-                                relheight= 1/3)
-      self.canvas_list[2].place(relx= 11/15,
-                                rely = 1/6 + 1/64,
-                                relwidth= 1/5,
-                                relheight= 1/3)
-      self.canvas_list[3].place(relx = 1/15,
-                                rely = 3/6 + 1/12,
-                                 relwidth= 1/5,
-                                 relheight= 1/3)
-      self.canvas_list[4].place(relx = 6/15,
-                                rely = 3/6 + 1/12,
-                                 relwidth= 1/5,
-                                 relheight= 1/3)
-      self.canvas_list[5].place(relx = 11/15,
-                                rely = 3/6 + 1/12,
-                                 relwidth= 1/5,
-                                 relheight= 1/3)
+      self.lights_canvas_height = self.lights_frame_height * 5/6
+      self.lights_canvas_y = self.lights_frame_height * 1/6
+
+      relative_width = 10/48 * self.lights_frame_width
+      relative_height = 9/15 * self.lights_canvas_height
       
-      for self.light in self.canvas_list:
-         self.light.create_oval(0, 0, 1/5 * self.lights_frame_width, 1/5 * self.lights_canvas_height,
-                                 fill = "gray", 
-                                 outline = "black")
+      self.canvas_list[0].place(relx = 10/480,
+                                rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
+                                 relwidth = 10/48,
+                                 relheight = relative_height / self.lights_frame_height)
+      self.canvas_list[1].place(relx = 1/4 + 10/480,
+                                rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
+                                relwidth = 10/48,
+                                relheight = relative_height / self.lights_frame_height)
+      self.canvas_list[2].place(relx = 1/2 + 10/480,
+                                rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
+                                relwidth = 10/48,
+                                relheight = relative_height / self.lights_frame_height)
+      self.canvas_list[3].place(relx = 3/4 + 10/480,
+                                rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
+                                relwidth = 10/48,
+                                relheight = relative_height / self.lights_frame_height)
+      for self.canvas in self.canvas_list:
+         self.canvas.create_oval(0, 0, 
+                                 10/48 * self.lights_frame_width,
+                                 relative_height,
+                                 fill = "gray", outline = "black")
       
-
-
-
+      self.text1 = ctk.CTkLabel(self.lights_frame, text="Van xoay", text_color="black", bg_color=self.fg_color,
+                                            font=ctk.CTkFont(size=15, weight="bold"))
+      self.text2 = ctk.CTkLabel(self.lights_frame, text="Van đẩy", text_color="black", bg_color=self.fg_color,
+                                            font=ctk.CTkFont(size=15, weight="bold"))
+      self.text3 = ctk.CTkLabel(self.lights_frame, text="Van gắp", text_color="black", bg_color=self.fg_color,
+                                             font=ctk.CTkFont(size=15, weight="bold"))    
+      self.text4 = ctk.CTkLabel(self.lights_frame, text="Băng tải", text_color="black", bg_color=self.fg_color,
+                                             font=ctk.CTkFont(size=15, weight="bold"))
+      
+      self.text1.place(relx = (10/480 * self.lights_frame_width + relative_width/2) / self.lights_frame_width,
+                       rely = (relative_height + 4/15 * self.lights_canvas_height + self.lights_canvas_y) / self.lights_frame_height,
+                       anchor = "center")
+      self.text2.place(relx = ((1/4 + 10/480) * self.lights_frame_width + relative_width/2) / self.lights_frame_width,
+                       rely = (relative_height + 4/15 * self.lights_canvas_height + self.lights_canvas_y) / self.lights_frame_height,
+                       anchor = "center")
+      self.text3.place(relx = ((1/2 + 10/480) * self.lights_frame_width + relative_width/2) / self.lights_frame_width,
+                         rely = (relative_height + 4/15 * self.lights_canvas_height + self.lights_canvas_y) / self.lights_frame_height,
+                         anchor = "center")
+      self.text4.place(relx = ((3/4 + 10/480) * self.lights_frame_width + relative_width/2) / self.lights_frame_width,
+                         rely = (relative_height + 4/15 * self.lights_canvas_height + self.lights_canvas_y) / self.lights_frame_height,
+                         anchor = "center")
 
 
