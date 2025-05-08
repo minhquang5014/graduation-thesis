@@ -1,22 +1,26 @@
-import os
+from pathlib import Path
 
-# Set your image folder path
-folder_path = "images"
+# === CONFIG ===
+folder_path = Path("images")
+image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+start_index = 1
+zero_padding = 5
+prefix = ""  # optional prefix like "dog_"
 
-# Get a list of image files (you can add more extensions if needed)
-image_extensions = [".jpg", ".jpeg", ".png"]
-images = [f for f in os.listdir(folder_path) if os.path.splitext(f)[1].lower() in image_extensions]
+# === GET ALL IMAGE FILES (renamed or not) ===
+images = sorted([f for f in folder_path.iterdir() if f.suffix.lower() in image_extensions])
 
-# Sort and rename
-for idx, filename in enumerate(sorted(images), start=1):
-    ext = os.path.splitext(filename)[1]
-    new_name = f"{idx}{ext}"
-    old_path = os.path.join(folder_path, filename)
-    new_path = os.path.join(folder_path, new_name)
-    try:
-        os.rename(old_path, new_path)
-    except FileExistsError:
-        print(f"filename {idx} has been renamed, continue to next one")
-        continue
+# === TEMP RENAME to avoid overwriting ===
+for idx, file in enumerate(images):
+    temp_name = f"temp_{idx}{file.suffix.lower()}"
+    file.rename(folder_path / temp_name)
 
-print(f"Renamed {len(images)} files.")
+# === FINAL RENAME (sequential) ===
+temp_files = sorted([f for f in folder_path.iterdir() if f.name.startswith("temp_")])
+
+for idx, file in enumerate(temp_files, start=start_index):
+    new_name = f"{prefix}{str(idx).zfill(zero_padding)}{file.suffix.lower()}"
+    file.rename(folder_path / new_name)
+    print(f"✅ {file.name} -> {new_name}")
+
+print(f"\nFinished renaming {len(temp_files)} files sequentially in '{folder_path.resolve()}'")

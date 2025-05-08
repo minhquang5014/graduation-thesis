@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
+from threading import Thread
 class SecondFrame():
     def __init__(self,screen_width: ctk.CTk.winfo_screenwidth, 
                  video_frame_width, screen_height:ctk.CTk.winfo_screenheight, 
@@ -20,6 +21,7 @@ class SecondFrame():
                             )
         self.putting_buttons_and_lights()
         self.putting_group_name()
+        self.start_stop_lights()
         # self.putting_logo()
         self.second_frame.update()
 
@@ -101,6 +103,21 @@ class SecondFrame():
             relwidth = (4/12 * self.second_frame_width) / self.second_frame_width,
             relheight = (4/9 * self.video_frame_height) / self.video_frame_height
         )
+    def start_stop_lights(self):
+        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color, 
+                                         border_color="black",
+                                        border_width=2, corner_radius = 10)
+        self.lights_frame.place(relx = 1/8 * self.button_frame_width / self.second_frame_width,
+                                rely = self.button_frame_height / self.video_frame_height,
+                                relwidth = 3/4 * self.button_frame_width / self.second_frame_width,
+                                relheight = 1/5)
+
+        self.lights_canvas = ctk.CTkCanvas(self.lights_frame, bg = self.fg_color, 
+                                           highlightthickness = 0, )
+        
+
+        self.lights_frame.update()
+
     def clicked_start(self):
         print("start clicked")
     def clicked_stop(self):
