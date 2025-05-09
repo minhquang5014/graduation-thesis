@@ -24,8 +24,7 @@ class FourthFrame():
         self.auto_manual()
         self.change_appearance()
         self.fourth_frame.update()
-        color_mode = self.change_appearance()
-        return color_mode
+
     def auto_manual(self):
         self.auto_manual_frame = ctk.CTkFrame(master = self.fourth_frame, fg_color = self.fg_color, 
                                                 border_color = "black",
@@ -54,7 +53,8 @@ class FourthFrame():
 
     def change_appearance(self):
         self.frame_for_option_menu = ctk.CTkFrame(self.fourth_frame, fg_color = "black")
-        self.appearance_mode_option_menu = ctk.CTkOptionMenu(master = self.frame_for_option_menu, values = ["Peace puff", "Sour green cherry"])
+        self.appearance_mode_option_menu = ctk.CTkOptionMenu(master = self.frame_for_option_menu, values = ["Peace puff", "Sour green cherry"], 
+                                                             command=self.func_to_change_color())
         print(self.appearance_mode_option_menu.winfo_reqheight(), self.appearance_mode_option_menu.winfo_reqwidth())
         self.frame_for_option_menu.place(relx = (self.fourth_frame_width - (2 * self.appearance_mode_option_menu.winfo_reqwidth())) / self.fourth_frame_width, 
                                          rely = 0, 
@@ -62,9 +62,9 @@ class FourthFrame():
         self.frame_for_option_menu.grid_rowconfigure((0, 1, 2), weight = 1, uniform = "a")
         self.frame_for_option_menu.grid_columnconfigure((0, 1, 2), weight = 1, uniform = "a")
         self.appearance_mode_option_menu.grid(row = 0, column = 1)
-        color_mode = self.appearance_mode_option_menu.get()
-        print(color_mode)
-    
+        return self.appearance_mode_option_menu.get()
+    def func_to_change_color(self):
+        pass
     def switch_event(self):
         if self.switch.get() == 1:
             print("Switching to manual mode")

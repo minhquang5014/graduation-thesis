@@ -40,7 +40,7 @@ class MainWindow(create_window.FullscreenWindow):
             video_frame_height=self.label_height,
             fg_color = self.fg_color
         )
-        color = fourth_frame.FourthFrame(
+        fourth = fourth_frame.FourthFrame(
             screen_width=self.screen_width, 
             video_frame_width=self.label_width, 
             screen_height=self.screen_height, 
@@ -48,8 +48,9 @@ class MainWindow(create_window.FullscreenWindow):
             fg_color = self.fg_color
         )
 
-        # self.fg_color = color_dir[color_menu]
-        # print(self.fg_color)
+        color = fourth.change_appearance()
+        print(color)
+        self.fg_color = color_dir[color]
 
         # press Esp to exit
         self.root.bind('<Escape>', self.exit_fullscreen)
