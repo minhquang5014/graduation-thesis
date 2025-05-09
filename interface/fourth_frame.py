@@ -33,9 +33,9 @@ class FourthFrame():
                                                 corner_radius = 10)
         self.auto_manual_frame_height = self.screen_height - self.video_frame_height 
         self.auto_manual_frame.place(relx = 0,
-        rely = 0, 
-        relwidth = self.auto_manual_frame_height/self.fourth_frame_width,
-        relheight = self.auto_manual_frame_height / self.fourth_frame_height)
+                                    rely = 0, 
+                                    relwidth = self.auto_manual_frame_height/self.fourth_frame_width,
+                                    relheight = self.auto_manual_frame_height / self.fourth_frame_height)
         self.auto_manual_frame.grid_rowconfigure((0, 1, 2), weight=1, uniform="a")
         self.auto_manual_frame.grid_columnconfigure((0, 1, 2), weight=1, uniform="a")
 
