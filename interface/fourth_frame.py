@@ -22,4 +22,3 @@ class FourthFrame():
                                relheight = self.fourth_frame_height/screen_height
                                )
         self.fourth_frame.update()
-

@@ -22,6 +22,7 @@ class SecondFrame():
         self.putting_buttons()
         self.putting_group_name()
         self.start_stop_lights()
+        self.lights_indicate_product_quality()
         # self.putting_logo()
         self.second_frame.update()
 
