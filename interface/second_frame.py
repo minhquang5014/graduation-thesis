@@ -113,7 +113,7 @@ class SecondFrame():
                                 rely = self.button_frame_height / self.video_frame_height,
                                 relwidth = 3/4 * self.button_frame_width / self.second_frame_width,
                                 relheight = 1/5)
-        print(3/4 * self.button_frame_width, 1/5 * self.video_frame_height)
+        # print(3/4 * self.button_frame_width, 1/5 * self.video_frame_height)
 
         self.lights_canvas_start = ctk.CTkCanvas(self.lights_frame, bg = self.fg_color, 
                                            highlightthickness = 0, )
@@ -139,7 +139,6 @@ class SecondFrame():
         # self.lights_start = ctk.CTkLabel(self.lights_frame, text="Start", text_color="black", bg_color=self.fg_color,
         #                                         font=ctk.CTkFont(size=10, weight="bold"))
         # self.lights_start.place(relx = 1/4, rely = 1, anchor = tk.CENTER)
-        print(1/8 * (3/4 * self.button_frame_width) + 1/4 * (self.button_frame_width * 3/4))
         self.lights_canvas_start.create_text(3/32 * self.button_frame_width ,
                                                 7/8 * self.button_frame_height / 2,
                                                 text = "Start",
