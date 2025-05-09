@@ -5,7 +5,7 @@ from threading import Thread
 class SecondFrame():
     def __init__(self,screen_width: ctk.CTk.winfo_screenwidth, 
                  video_frame_width, screen_height:ctk.CTk.winfo_screenheight, 
-                 video_frame_height, fixed_button_size:bool, fg_color = "#ffd7b5",*args, **kwargs):
+                 video_frame_height, fixed_button_size:bool, fg_color = None,*args, **kwargs):
         self.screen_width = screen_width 
         self.video_frame_width = video_frame_width
         self.screen_height = screen_height

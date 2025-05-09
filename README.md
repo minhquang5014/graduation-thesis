@@ -52,3 +52,7 @@ python PLC/plc_connection.py
 ```sh
 python main.py
 ```
+
+try this link for custom dataset training YOLO algorithm: 
+
+https://colab.research.google.com/drive/1Jkf9k6akhm1cnwcOIup9G_h2bW6HROPq?usp=sharing

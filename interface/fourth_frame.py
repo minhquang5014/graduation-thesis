@@ -4,7 +4,7 @@ import tkinter as tk
 class FourthFrame():
     def __init__ (self, screen_width: ctk.CTk.winfo_screenwidth, 
                  video_frame_width, screen_height:ctk.CTk.winfo_screenheight, 
-                 video_frame_height, fg_color = "#ffd7b5"):
+                 video_frame_height, fg_color = None):
         self.fg_color = fg_color
         self.fourth_frame = ctk.CTkFrame(master = None, fg_color = fg_color)
         
@@ -22,7 +22,10 @@ class FourthFrame():
                                relheight = self.fourth_frame_height/screen_height
                                )
         self.auto_manual()
+        self.change_appearance()
         self.fourth_frame.update()
+        color_mode = self.change_appearance()
+        return color_mode
     def auto_manual(self):
         self.auto_manual_frame = ctk.CTkFrame(master = self.fourth_frame, fg_color = self.fg_color, 
                                                 border_color = "black",
@@ -43,11 +46,25 @@ class FourthFrame():
         self.manual_auto_light.place(relx = 0,
                                      rely = self.switch.winfo_reqheight() * 3/self.auto_manual_frame_height,
                                      relwidth = 1,
-                                     relheight  = (self.auto_manual_frame_height - (self.switch.winfo_reqwidth()))/ self.auto_manual_frame_height)
+                                     relheight  = (self.auto_manual_frame_height - self.switch.winfo_reqwidth())/ self.auto_manual_frame_height)
         print(self.switch.winfo_reqheight(), self.switch.winfo_reqwidth())
         
 
         self.auto_manual_frame.update()
+
+    def change_appearance(self):
+        self.frame_for_option_menu = ctk.CTkFrame(self.fourth_frame, fg_color = "black")
+        self.appearance_mode_option_menu = ctk.CTkOptionMenu(master = self.frame_for_option_menu, values = ["Peace puff", "Sour green cherry"])
+        print(self.appearance_mode_option_menu.winfo_reqheight(), self.appearance_mode_option_menu.winfo_reqwidth())
+        self.frame_for_option_menu.place(relx = (self.fourth_frame_width - (2 * self.appearance_mode_option_menu.winfo_reqwidth())) / self.fourth_frame_width, 
+                                         rely = 0, 
+                                         relwidth = 2 * self.appearance_mode_option_menu.winfo_reqwidth() / self.fourth_frame_width, relheight = 1)
+        self.frame_for_option_menu.grid_rowconfigure((0, 1, 2), weight = 1, uniform = "a")
+        self.frame_for_option_menu.grid_columnconfigure((0, 1, 2), weight = 1, uniform = "a")
+        self.appearance_mode_option_menu.grid(row = 0, column = 1)
+        color_mode = self.appearance_mode_option_menu.get()
+        print(color_mode)
+    
     def switch_event(self):
         if self.switch.get() == 1:
             print("Switching to manual mode")
