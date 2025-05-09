@@ -18,7 +18,7 @@ class MainWindow(create_window.FullscreenWindow):
                 self.frame,
                 screen_width=self.screen_width,
                 screen_height=self.screen_height,
-                fixed_video_label=False
+                fixed_video_label=True
                 )
             put_label_camera.update_frame(self.capture, self.video_label, self.root, resized_width=self.label_width, resized_height=self.label_height)
         except Exception as e:
