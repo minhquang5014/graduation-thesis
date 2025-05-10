@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Webcam Feed</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: flex-start; /* left-align */
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .video-container {
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-left: 30px;
+        }
+
+        .video-container h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .webcam {
+            width: 640px;  /* Adjust size here */
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <h2>📷 Live Webcam</h2>
+        <img src="{{ url_for('video_feed') }}" class="webcam" />
+    </div>
+</body>
+</html>

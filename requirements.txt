@@ -1,0 +1,11 @@
+opencv-python
+numpy
+flask
+streamlit
+streamlit_webrtc
+av
+pymodbus
+customtkinter
+tk
+supervision
+pillow
