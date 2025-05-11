@@ -52,36 +52,36 @@ class FourthFrame():
                                      relwidth = 1,
                                      relheight  = (self.auto_manual_frame_height - self.switch.winfo_reqwidth())/ self.auto_manual_frame_height)
         
-        self.manual_canvas_light = ctk.CTkCanvas(self.manual_auto_light, bg= self.fg_color,
+        self.auto_canvas_light = ctk.CTkCanvas(self.manual_auto_light, bg= self.fg_color,
                                                  highlightthickness = 0)
-        self.manual_canvas_light.place(relx = 1/20, 
+        self.auto_canvas_light.place(relx = 1/20, 
                                        rely = 0,
                                        relwidth = 2/5, 
                                        relheight = 3/5)
-        self.manual_canvas_light.create_oval(0, 0,
-                                            2/5 * self.auto_manual_frame_height,
-                                            3/5 * (self.auto_manual_frame_height - self.switch.winfo_reqwidth()),
-                                            fill="gray", 
-                                            outline="black")
-        self.manual_text = ctk.CTkLabel(self.auto_manual_frame, text = "MANUAL", text_color = "black")
-        self.manual_text.place(relx = 1/20 + 1/2 * 2/5,
-                               rely = 3/5 + 2/15, anchor = "center",
-                               )
-
-        self.auto_canvas_light = ctk.CTkCanvas(self.manual_auto_light, bg = self.fg_color,
-                                                highlightthickness = 0)
-        self.auto_canvas_light.place(relx = 1/2 + 1/20,
-                                     rely = 0,
-                                     relwidth = 2/5,
-                                     relheight =3/5
-                                    )
         self.auto_canvas_light.create_oval(0, 0,
                                             2/5 * self.auto_manual_frame_height,
                                             3/5 * (self.auto_manual_frame_height - self.switch.winfo_reqwidth()),
                                             fill="gray", 
                                             outline="black")
         self.auto_text = ctk.CTkLabel(self.auto_manual_frame, text = "AUTO", text_color = "black")
-        self.auto_text.place(relx = 1/20 + 1/2 + 1/2 * 2/5,
+        self.auto_text.place(relx = 1/20 + 1/2 * 2/5,
+                               rely = 3/5 + 2/15, anchor = "center",
+                               )
+
+        self.manual_canvas_light = ctk.CTkCanvas(self.manual_auto_light, bg = self.fg_color,
+                                                highlightthickness = 0)
+        self.manual_canvas_light.place(relx = 1/2 + 1/20,
+                                     rely = 0,
+                                     relwidth = 2/5,
+                                     relheight =3/5
+                                    )
+        self.manual_canvas_light.create_oval(0, 0,
+                                            2/5 * self.auto_manual_frame_height,
+                                            3/5 * (self.auto_manual_frame_height - self.switch.winfo_reqwidth()),
+                                            fill="gray", 
+                                            outline="black")
+        self.manual_text = ctk.CTkLabel(self.auto_manual_frame, text = "MANUAL", text_color = "black")
+        self.manual_text.place(relx = 1/20 + 1/2 + 1/2 * 2/5,
                                rely = 3/5 + 2/15, anchor = "center",
                                )
         
