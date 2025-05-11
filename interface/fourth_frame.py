@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
-
+from datetime import datetime
 class FourthFrame():
     def __init__ (self, screen_width: ctk.CTk.winfo_screenwidth, 
                  video_frame_width, screen_height:ctk.CTk.winfo_screenheight, 
@@ -23,6 +23,7 @@ class FourthFrame():
                                )
         self.auto_manual()
         self.change_appearance()
+        self.status_textbox()
         self.fourth_frame.update()
 
     def auto_manual(self):
@@ -97,6 +98,35 @@ class FourthFrame():
                                          relheight = 1)
         self.appearance_mode_option_menu.place(relx = 1/2, rely = 1/4, anchor = "center")
         return self.appearance_mode_option_menu.get()
+    def status_textbox(self):
+        self.textbox_frame = ctk.CTkFrame(self.fourth_frame, 
+                                          fg_color = self.fg_color,
+                                          border_color= "black",
+                                          border_width = 2,
+                                          corner_radius = 10
+                                          )
+        self.textbox_frame.place(relx = self.auto_manual_frame_height / self.fourth_frame_width,
+                                  rely = 0,
+                                  relwidth = (self.fourth_frame_width - self.auto_manual_frame_height - self.appearance_mode_option_menu.winfo_reqwidth()) / self.fourth_frame_width,
+                                  relheight = 1)
+
+        self.textbox = ctk.CTkTextbox(self.textbox_frame,
+                                      fg_color = self.fg_color,
+                                      border_color = "black",
+                                      border_width = 2,
+                                      corner_radius = 10
+                                      )
+        self.textbox.place(relx = 0,
+                           rely = 0,
+                           relwidth = 1,
+                           relheight = 1)
+        self.insert_textbox()
+
+    def insert_textbox(self, message = "Program started"):
+        current_time = datetime.now().strftime("%H:%M:%S")
+        self.textbox.configure(state = "normal")
+        self.textbox.insert(tk.END, current_time + ":"+ " " + message + "\n")
+        self.textbox.configure(state = "disabled")
     def func_to_change_color(self):
         pass
     def switch_event(self):
