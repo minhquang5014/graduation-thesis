@@ -1,7 +1,8 @@
 import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
-
+from time import time
+import datetime
 def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=False, label_width=None, label_height=None):
     if fixed_video_label:
         label_width = 640
@@ -17,8 +18,12 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video, root:
     if ret:
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
-        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-        img = Image.fromarray(cv2image)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        current_date = datetime.date.today()
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        cv2.putText(frame, f"{current_date} {current_time}", 
+                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        img = Image.fromarray(frame)
         imgtk = ImageTk.PhotoImage(image=img)
         video_label.imgtk = imgtk
         video_label.configure(image=imgtk)
