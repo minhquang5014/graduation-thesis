@@ -55,7 +55,6 @@ class MainWindow(create_window.FullscreenWindow):
             )
 
         color = fourth.change_appearance()
-        print(color)
         self.fg_color = color_dir[color]
 
         # press Esp to exit
