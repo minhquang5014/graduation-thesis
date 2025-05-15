@@ -54,8 +54,8 @@ class MainWindow(create_window.FullscreenWindow):
                 resized_height=self.label_height
             )
 
-        color = fourth.change_appearance()
-        self.fg_color = color_dir[color]
+        # color = fourth.change_appearance()
+        # self.fg_color = color_dir[color]
 
         # press Esp to exit
         self.root.bind('<Escape>', self.exit_fullscreen)

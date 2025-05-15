@@ -22,7 +22,6 @@ class FourthFrame():
                                relheight = self.fourth_frame_height/screen_height
                                )
         self.auto_manual()
-        self.change_appearance()
         self.status_textbox()
         self.fourth_frame.update()
 
@@ -87,17 +86,6 @@ class FourthFrame():
                                )
         
         self.auto_manual_frame.update()
-
-    def change_appearance(self):
-        self.frame_for_option_menu = ctk.CTkFrame(self.fourth_frame, fg_color = self.fg_color)
-        self.appearance_mode_option_menu = ctk.CTkOptionMenu(master = self.frame_for_option_menu, values = ["Peace puff", "Sour green cherry"], 
-                                                             command=self.func_to_change_color())
-        self.frame_for_option_menu.place(relx = (self.fourth_frame_width - self.appearance_mode_option_menu.winfo_reqwidth()) / self.fourth_frame_width, 
-                                         rely = 0, 
-                                         relwidth = self.appearance_mode_option_menu.winfo_reqwidth() / self.fourth_frame_width, 
-                                         relheight = 1)
-        self.appearance_mode_option_menu.place(relx = 1/2, rely = 1/4, anchor = "center")
-        return self.appearance_mode_option_menu.get()
     def status_textbox(self):
         self.textbox_frame = ctk.CTkFrame(self.fourth_frame, 
                                           fg_color = self.fg_color,
@@ -107,7 +95,7 @@ class FourthFrame():
                                           )
         self.textbox_frame.place(relx = self.auto_manual_frame_height / self.fourth_frame_width,
                                   rely = 0,
-                                  relwidth = (self.fourth_frame_width - self.auto_manual_frame_height - self.appearance_mode_option_menu.winfo_reqwidth()) / self.fourth_frame_width,
+                                  relwidth = (self.fourth_frame_width - self.auto_manual_frame_height) / self.fourth_frame_width,
                                   relheight = 1)
 
         self.textbox = ctk.CTkTextbox(self.textbox_frame,
@@ -127,8 +115,7 @@ class FourthFrame():
         self.textbox.configure(state = "normal")
         self.textbox.insert(tk.END, current_time + ":"+ " " + message + "\n")
         self.textbox.configure(state = "disabled")
-    def func_to_change_color(self):
-        pass
+
     def switch_event(self):
         if self.switch.get() == 1:
             print("Switching to manual mode")
