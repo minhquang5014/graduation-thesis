@@ -9,19 +9,20 @@ from supervision import Detections, BoxAnnotator
 colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 
 class ObjectDetection:
-    def __init__(self, capture_index=0):
+    def __init__(self, model, capture_index=0):
         self.capture_index = capture_index
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         print(f"Device used: {self.device}")
 
-        self.model = self.load_model()
+        self.model = YOLO(model)
+        self.model.fuse
         self.CLASS_NAMES_DICT = self.model.model.names 
         self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
         
-    def load_model(self):
-        model = YOLO("model/custom_train_yolov10s.pt")
-        model.fuse()
-        return model
+    # def load_model(self):
+    #     model = YOLO("model/custom_train_yolov10s.pt")
+    #     model.fuse()
+        # return model
     def predict(self, frame):
         return self.model(frame)
     
@@ -48,6 +49,7 @@ class ObjectDetection:
                 class_id=results[0].boxes.cls.cpu().numpy().astype(int)
         )
         for bbox, confidence, class_id in zip(detections.xyxy, detections.confidence, detections.class_id):
+            # if confidence 
             self.labels = [f"{self.CLASS_NAMES_DICT[class_id]}"]
             
             #crappu code by the way
@@ -92,6 +94,6 @@ class ObjectDetection:
         cv2.destroyAllWindows()
         
 # detector = ObjectDetection(capture_index=0)
-detector = ObjectDetection(capture_index="video/video_07332025_11h33m31s.avi")
+detector = ObjectDetection(model = "model/custom_train_yolov10s.pt", capture_index=0)
 
 detector()
