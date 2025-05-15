@@ -7,7 +7,7 @@ color_dir = {
     "Sour green cherry": "#c8ffb5"
 }
 
-class MainWindow(create_window.FullscreenWindow):
+class MainWindow(create_window.BiggerWindow):
     def __init__(self, fg_color = "#ffd7b5", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fg_color = fg_color
@@ -15,7 +15,7 @@ class MainWindow(create_window.FullscreenWindow):
                 self.frame,
                 screen_width=self.screen_width,
                 screen_height=self.screen_height,
-                fixed_video_label=True
+                fixed_video_label=False
                 )
         
         # call the Frame object

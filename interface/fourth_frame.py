@@ -65,7 +65,7 @@ class FourthFrame():
                                             outline="black")
         self.auto_text = ctk.CTkLabel(self.auto_manual_frame, text = "AUTO", text_color = "black")
         self.auto_text.place(relx = 1/20 + 1/2 * 2/5,
-                               rely = 3/5 + 2/15, anchor = "center",
+                               rely = 4/5, anchor = "center",
                                )
 
         self.manual_canvas_light = ctk.CTkCanvas(self.manual_auto_light, bg = self.fg_color,
@@ -82,7 +82,7 @@ class FourthFrame():
                                             outline="black")
         self.manual_text = ctk.CTkLabel(self.auto_manual_frame, text = "MANUAL", text_color = "black")
         self.manual_text.place(relx = 1/20 + 1/2 + 1/2 * 2/5,
-                               rely = 3/5 + 2/15, anchor = "center",
+                               rely = 4/5, anchor = "center",
                                )
         
         self.auto_manual_frame.update()
