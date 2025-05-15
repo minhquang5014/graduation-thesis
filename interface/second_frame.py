@@ -48,7 +48,7 @@ class SecondFrame():
                                           fg_color = "green",
                                             corner_radius = 50, 
                                             hover_color="gray", 
-                                            command=self.clicked_start
+                                            command=self.clicked_start()
                                             )
         # self.start_button.grid(row=0, column=0, padx=5, pady=5, anchor = tk.CENTER)
         self.start_button.place(relx = 7/24, rely = 0.5, anchor = tk.CENTER)
@@ -59,7 +59,7 @@ class SecondFrame():
                                           fg_color = "red",
                                             corner_radius = 50, 
                                             hover_color="gray", 
-                                            command=self.clicked_stop
+                                            command=self.clicked_stop()
                                             )
         self.stop_button.place(relx = 17/24, rely = 0.5, anchor = tk.CENTER)
     def putting_group_name(self):
@@ -105,14 +105,14 @@ class SecondFrame():
             relheight = (4/9 * self.video_frame_height) / self.video_frame_height
         )
     def start_stop_lights(self):
-        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color, 
+        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color="black", 
                                         #  border_color="black",
                                         # border_width=2, corner_radius = 10
                                         )
         self.lights_frame.place(relx = 1/8 * self.button_frame_width / self.second_frame_width,
                                 rely = self.button_frame_height / self.video_frame_height,
                                 relwidth = 3/4 * self.button_frame_width / self.second_frame_width,
-                                relheight = 1/5)
+                                relheight = 3/10)
         # print(3/4 * self.button_frame_width, 1/5 * self.video_frame_height)
 
         self.lights_canvas_start = ctk.CTkCanvas(self.lights_frame, bg = self.fg_color, 
@@ -153,13 +153,16 @@ class SecondFrame():
                                                 )
         self.lights_frame.update()
     def lights_indicate_product_quality(self):
-        self.lights_indicate_product_quality_frame = ctk.CTkFrame(self.second_frame, fg_color="black")
-        self.lights_indicate_product_quality_frame.place(relx = 0, 
-                                                         rely = 2 * self.button_frame_height / self.video_frame_height,
-                                                         relwidth = self.button_frame_width / self.second_frame_width,
-                                                         relheight = 1/5)
+        self.product_quality_frame = ctk.CTkFrame(self.second_frame, fg_color="black")
+        self.product_quality_frame.place(relx = 0, 
+                                        rely = self.button_frame_height / self.video_frame_height + 3/10,
+                                        relwidth = self.button_frame_width / self.second_frame_width,
+                                        relheight = 3/10)
 
     def clicked_start(self):
         print("start clicked")
+    
     def clicked_stop(self):
+        import traceback
         print("stop clicked")
+        traceback.print_stack()
