@@ -110,14 +110,11 @@ class FourthFrame():
                            relheight = 1)
         self.insert_textbox()
 
-    def insert_textbox(self, message = "Program started"):
+    def insert_textbox(self, message = "GUI started"):
         current_time = datetime.now().strftime("%H:%M:%S")
         self.textbox.configure(state = "normal")
         self.textbox.insert(tk.END, current_time + ":"+ " " + message + "\n")
         self.textbox.configure(state = "disabled")
 
     def switch_event(self):
-        if self.switch.get() == 1:
-            print("Switching to manual mode")
-        else:
-            print("Switching back to auto mode")
+        pass

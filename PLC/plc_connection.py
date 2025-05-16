@@ -13,6 +13,7 @@ class PLCConnection:
             self.connect_status = self.client.connect()
             print(self.connect_status)
             print(f"Connection to {self.host}:{self.port} is {'successful' if self.connect_status else 'failed'}")
+            return self.connect_status
         except ConnectionException as e:
             print(f"Failed to connect to PLC: {e}")
 
@@ -27,7 +28,7 @@ class PLCConnection:
         if self.connect_status:
             # Không sử dụng 'unit' trong pymodbus 3.x
             result = self.client.read_holding_registers(address, count)
-            return result.registers if not result.isError() else None
+            return result.registers[0] if not result.isError() else None
         else:
             print("Not connected. Cannot read.")
             return None

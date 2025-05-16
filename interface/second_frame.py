@@ -48,7 +48,7 @@ class SecondFrame():
                                           fg_color = "green",
                                             corner_radius = 50, 
                                             hover_color="gray", 
-                                            command=self.clicked_start()
+                                            command=self.clicked_start
                                             )
         # self.start_button.grid(row=0, column=0, padx=5, pady=5, anchor = tk.CENTER)
         self.start_button.place(relx = 7/24, rely = 0.5, anchor = tk.CENTER)
@@ -59,7 +59,7 @@ class SecondFrame():
                                           fg_color = "red",
                                             corner_radius = 50, 
                                             hover_color="gray", 
-                                            command=self.clicked_stop()
+                                            command=self.clicked_stop
                                             )
         self.stop_button.place(relx = 17/24, rely = 0.5, anchor = tk.CENTER)
     def putting_group_name(self):
@@ -105,7 +105,7 @@ class SecondFrame():
             relheight = (4/9 * self.video_frame_height) / self.video_frame_height
         )
     def start_stop_lights(self):
-        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color="black", 
+        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color, 
                                         #  border_color="black",
                                         # border_width=2, corner_radius = 10
                                         )
@@ -153,16 +153,87 @@ class SecondFrame():
                                                 )
         self.lights_frame.update()
     def lights_indicate_product_quality(self):
-        self.product_quality_frame = ctk.CTkFrame(self.second_frame, fg_color="black")
+        self.product_quality_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color,
+                                                  corner_radius=10, 
+                                                  border_color="black",
+                                                  border_width=2)
         self.product_quality_frame.place(relx = 0, 
                                         rely = self.button_frame_height / self.video_frame_height + 3/10,
                                         relwidth = self.button_frame_width / self.second_frame_width,
-                                        relheight = 3/10)
+                                        relheight = 2/5)
+        self.product_quality_frame_height = 2/5 * self.video_frame_height
+        self.entry_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "NHẬP", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.entry_text.place(relx = 1/4,
+                              rely = 0,
+                              relwidth = 1/4,
+                              relheight = 1/4)
+        self.counter_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "ĐẾM", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.counter_text.place(relx = 2/4, 
+                                rely = 0, 
+                                relwidth = 1/4,
+                                relheight = 1/4)
+        self.reset_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "RESET", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.reset_text.place(relx = 3/4,
+                              rely = 0,
+                              relwidth = 1/4,
+                              relheight = 1/4)
+        self.NG_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "Hàng NG", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.white_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "Hàng trắng", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.black_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "Hàng đen", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.white_text.place(relx = 0, rely = 1/4, relwidth = 1/4, relheight = 1/4)
+        self.black_text.place(relx = 0, rely = 2/4, relwidth = 1/4, relheight = 1/4)
+        self.NG_text.place(relx = 0, rely = 3/4, relwidth = 1/4, relheight = 1/4)
 
+        self.integer_var = tk.StringVar()
+        self.white_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var)
+        self.white_entry.place(relx=1/4,
+                               rely = 1/4, relwidth = 1/4, relheight = 1/4)
+        self.white_entry.bind('<Return>', self.on_enter_white)
+
+        self.white_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
+        self.white_show.place(relx = 2/4,
+                              rely = 1/4,
+                              relwidth = 1/4, relheight = 1/4)
+        self.white_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.white_show.insert(tk.END, "0")
+        self.white_show.tag_add("center", "1.0", "end")
+        self.white_show.configure(state="disabled")
+
+        self.reset_white = ctk.CTkButton(self.product_quality_frame, text="RESET RED", fg_color="gray", command=self.reset1)
+        self.reset_white.place(relx = 3/4,
+                               rely = 1/4,
+                               relwidth = 1/4, 
+                               relheight = 1/4)
+        
+        # self.trace_id = self.integer_var.trace_add('write', self.validate_integer_red)
+        # self.after(1000, self.update_red_show) 
+        # self.after(1000, self.check_storage_limit_red)
+    def on_enter_white(self, *arg):
+        value = self.integer_var.get()
+        if not value.isdigit():
+            self.integer_var.set(''.join(filter(str.isdigit, value)))
+    def reset1(self):
+        print("reset white count")
     def clicked_start(self):
-        print("start clicked")
+        pass
     
     def clicked_stop(self):
-        import traceback
-        print("stop clicked")
-        traceback.print_stack()
+        pass
