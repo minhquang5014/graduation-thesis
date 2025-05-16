@@ -12,9 +12,10 @@ color_dir = {
 }
 
 class MainWindow(create_window.BiggerWindow):
-    def __init__(self, fg_color = "#ffd7b5", *args, **kwargs):
+    def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fg_color = fg_color
+        self.capture_index = capture_index
         self.connect_plc = PLCConnection(host = '192.168.0.1')
         self.connect_status = self.connect_plc.connectPLC()
         print(self.connect_status)
@@ -58,7 +59,7 @@ class MainWindow(create_window.BiggerWindow):
         self.auto_manual_switch = self.fourth.switch
         self.auto_manual_switch.configure(command = self.custom_auto_manual_switch)
 
-        self.capture = cv2.VideoCapture(0)
+        self.capture = cv2.VideoCapture(capture_index)
         ret, frame = self.capture.read()
         if not self.capture.isOpened() or not ret or frame is None:
             self.fourth.insert_textbox(message="Unable to access camera. Please check your camera")
