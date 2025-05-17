@@ -17,8 +17,8 @@ class ObjectDetection:
         self.model.to(self.device)
         self.CLASS_NAMES_DICT = self.model.model.names
         self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
-    def predict(self):
-        return self.model(self.frame)
+    # def predict(self):
+    #     return self.model(self.frame)
     
     def plot_boxes(self, results):
         xyxys = []
@@ -58,7 +58,7 @@ class ObjectDetection:
         return self.frame
     def __call__(self):
         start_time = time()
-        results = self.predict(self.frame)
+        results = self.model(self.frame)
         self.frame = self.plot_boxes(results)
         end_time = time()
 

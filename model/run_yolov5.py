@@ -13,7 +13,7 @@ class ObjectDetection:
         print(f"device used: {self.device}")
 
     def load_model(self):
-        model = torch.hub.load('ultralytics/yolov5','yolov5n', pretrained=True)
+        model = torch.hub.load(repo_or_dir='model/yolov5s.pt', model='yolov5s', source='local',pretrained=True)
         return model
     def score_frame(self, frame):
         self.model.to(self.device)

@@ -3,7 +3,6 @@ import cv2
 from PIL import Image, ImageTk
 from time import time
 import datetime
-from model.ObjectDetection import ObjectDetection
 def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=False, label_width=None, label_height=None):
     if fixed_video_label:
         label_width = 640
@@ -22,7 +21,8 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
         if enable_detection == True:
-            frame = ObjectDetection(frame = frame, model="model/custom_train_yolov10s.pt")
+            from model.ObjectDetection import ObjectDetection
+            frame = ObjectDetection(frame = frame, model="model/custom_train_yolov10s.pt").__call__()
             
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         current_date = datetime.date.today()

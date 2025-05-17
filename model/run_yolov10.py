@@ -83,7 +83,7 @@ class ObjectDetection:
             if end_time - start_time != 0:
                 fps = 1/np.round(end_time - start_time, 2)
             # print(fps)
-            cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+            cv2.putText(frame, f'FPS: {int(fps)}', (20,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
             
             cv2.imshow('YOLOv8 Detection', frame)
  
