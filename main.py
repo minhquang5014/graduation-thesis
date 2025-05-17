@@ -11,7 +11,7 @@ color_dir = {
     "Sour green cherry": "#c8ffb5"
 }
 
-class MainWindow(create_window.BiggerWindow):
+class MainWindow(create_window.FullscreenWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fg_color = fg_color
@@ -69,7 +69,8 @@ class MainWindow(create_window.BiggerWindow):
                 self.video_label,
                 self.root,
                 resized_width=self.label_width,
-                resized_height=self.label_height
+                resized_height=self.label_height,
+                enable_detection=False
             )
         
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()

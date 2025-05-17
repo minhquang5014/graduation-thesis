@@ -217,21 +217,82 @@ class SecondFrame():
         self.white_show.tag_add("center", "1.0", "end")
         self.white_show.configure(state="disabled")
 
-        self.reset_white = ctk.CTkButton(self.product_quality_frame, text="RESET RED", fg_color="gray", command=self.reset1)
+        self.reset_white = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset1)
         self.reset_white.place(relx = 3/4,
                                rely = 1/4,
                                relwidth = 1/4, 
                                relheight = 1/4)
         
+        self.integer_var2 = tk.StringVar()
+        self.black_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var2)
+        self.black_entry.place(relx=1/4,
+                               rely = 2/4, relwidth = 1/4, relheight = 1/4)
+        self.black_entry.bind('<Return>', self.on_enter_black)
+
+        self.black_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
+        self.black_show.place(relx = 2/4,
+                              rely = 2/4,
+                              relwidth = 1/4, relheight = 1/4)
+        self.black_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.black_show.insert(tk.END, "0")
+        self.black_show.tag_add("center", "1.0", "end")
+        self.black_show.configure(state="disabled")
+
+        self.reset_black = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset2)
+        self.reset_black.place(relx = 3/4,
+                               rely = 2/4,
+                               relwidth = 1/4, 
+                               relheight = 1/4)
+        
+        self.integer_var3 = tk.StringVar()
+        self.ng_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var3)
+        self.ng_entry.place(relx=1/4,
+                               rely = 3/4, relwidth = 1/4, relheight = 1/4)
+        self.ng_entry.bind('<Return>', self.on_enter_ng)
+
+        self.black_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
+        self.black_show.place(relx = 2/4,
+                              rely = 3/4,
+                              relwidth = 1/4, relheight = 1/4)
+        self.black_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.black_show.insert(tk.END, "0")
+        self.black_show.tag_add("center", "1.0", "end")
+        self.black_show.configure(state="disabled")
+
+        self.reset_black = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset3)
+        self.reset_black.place(relx = 3/4,
+                               rely = 3/4,
+                               relwidth = 1/4, 
+                               relheight = 1/4)
+
         # self.trace_id = self.integer_var.trace_add('write', self.validate_integer_red)
         # self.after(1000, self.update_red_show) 
         # self.after(1000, self.check_storage_limit_red)
     def on_enter_white(self, *arg):
-        value = self.integer_var.get()
-        if not value.isdigit():
-            self.integer_var.set(''.join(filter(str.isdigit, value)))
+        value1 = self.integer_var.get()
+        if not value1.isdigit():
+            self.integer_var.set(''.join(filter(str.isdigit, value1)))
+        print(value1)
     def reset1(self):
         print("reset white count")
+
+    def on_enter_black(self, *arg):
+        value2 = self.integer_var2.get()
+        if not value2.isdigit():
+            self.integer_var2.set(''.join(filter(str.isdigit, value2)))
+        print(value2)
+    def reset2(self):
+        print("reset black")
+    
+    def on_enter_ng(self, *arg):
+        value3 = self.integer_var3.get()
+        if not value3.isdigit():
+            self.integer_var3.set(''.join(filter(str.isdigit, value3)))
+        print(value3)
+        
+    def reset3(self):
+        print("reset NG storage")
+
     def clicked_start(self):
         pass
     
