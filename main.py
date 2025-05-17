@@ -35,6 +35,8 @@ class MainWindow(create_window.FullscreenWindow):
             fixed_button_size = False,
             fg_color = self.fg_color
         )
+        self.second.white_entry.bind('<Return>', self.on_enter_white)
+
         self.second.start_button.configure(command=self.custom_start)
         self.second.stop_button.configure(command=self.custom_stop)
 
@@ -83,12 +85,34 @@ class MainWindow(create_window.FullscreenWindow):
         self.root.mainloop()
 
     def custom_start(self):
-        self.fourth.insert_textbox(message="Pressing start. The program is now running")
+        self.fourth.insert_textbox(message="Pressing start. The program is now running, sending int to h_reg 3")
         self.connect_plc.write(3, 1)
-
+        self.connect_plc.write(4, 0)
+        self.after(400, self.reset_start_stop_button)
+        
     def custom_stop(self):
-        self.fourth.insert_textbox(message="Pressing stop. Stops the program now")
+        self.fourth.insert_textbox(message="Pressing stop. Stops the program now, sending int to h_reg 4")
         self.connect_plc.write(4, 1)
+        self.connect_plc.write(3, 0)
+        self.after(400, self.reset_start_stop_button)
+
+    def reset_start_stop_button(self):
+        self.connect_plc.write(4, 0)
+        self.connect_plc.write(3, 0)
+        self.read_start_stop_lights()
+    def read_start_stop_lights(self):
+        initial_start_state = self.connect_plc.read(5)
+        initial_stop_state = self.connect_plc.read(6)
+        self.update_lights(initial_start_state, initial_stop_state)
+    def update_lights(self, state1, state2):
+        if state1 == 1:
+            self.second.lights_canvas_start.itemconfig(self.second.oval_start, "green")
+        else:
+            self.second.lights_canvas_start.itemconfig(self.second.oval_start, "gray")
+        if state2 == 1:
+            self.second.lights_canvas_stop.itemconfig(self.second.oval_stop, "red")
+        else:
+            self.second.lights_canvas_stop.itemconfig(self.second.oval_stop, "gray")
 
     def custom_auto_manual_switch(self):
         if self.auto_manual_switch.get() == 1:
@@ -97,6 +121,19 @@ class MainWindow(create_window.FullscreenWindow):
         else:
             self.connect_plc.write(7, 0)
             self.fourth.insert_textbox(message="Switching back to auto mode")
+
+    def on_enter_white(self, *arg):
+        value1 = self.second.integer_var.get()
+        if not value1.isdigit():
+            self.second.integer_var.set(''.join(filter(str.isdigit, value1)))
+    def on_enter_black(self, *arg):
+        value2 = self.second.integer_var2.get()
+        if not value2.isdigit():
+            self.second.integer_var2.set(''.join(filter(str.isdigit, value2)))
+    def on_enter_ng(self, *arg):
+        value3 = self.second.integer_var3.get()
+        if not value3.isdigit():
+            self.second.integer_var3.set(''.join(filter(str.isdigit, value3)))
             
     def exit_fullscreen(self, event):
         self.capture.release()

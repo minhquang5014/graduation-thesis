@@ -24,11 +24,11 @@ This is for writing or reading holding register:
 
 11. read van kẹp tay gắp
 
-12. read van đẩy sp 1
+12. read van đẩy sp black
 
-13. read van đẩy sp 2
+13. read van đẩy sp white
 
-14. read van đẩy sp 3
+14. read van đẩy sp NG
 
 15. read green light
 

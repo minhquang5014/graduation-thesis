@@ -128,11 +128,11 @@ class SecondFrame():
                                       relwidth = 1/4,
                                       relheight = 7/8
                                       )
-        self.lights_canvas_start.create_oval(0, 0, 
+        self.oval_start = self.lights_canvas_start.create_oval(0, 0, 
                                              3/16 * self.button_frame_width, 
                                              7/8 * self.button_frame_height, 
                                              fill="green", outline = "black")
-        self.lights_canvas_stop.create_oval(0, 0, 
+        self.oval_stop = self.lights_canvas_stop.create_oval(0, 0, 
                                              3/16 * self.button_frame_width, 
                                              7/8 * self.button_frame_height,
                                              fill="red", outline="black")
@@ -206,7 +206,6 @@ class SecondFrame():
         self.white_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var)
         self.white_entry.place(relx=1/4,
                                rely = 1/4, relwidth = 1/4, relheight = 1/4)
-        self.white_entry.bind('<Return>', self.on_enter_white)
 
         self.white_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
         self.white_show.place(relx = 2/4,
@@ -268,30 +267,15 @@ class SecondFrame():
         # self.trace_id = self.integer_var.trace_add('write', self.validate_integer_red)
         # self.after(1000, self.update_red_show) 
         # self.after(1000, self.check_storage_limit_red)
-    def on_enter_white(self, *arg):
-        value1 = self.integer_var.get()
-        if not value1.isdigit():
-            self.integer_var.set(''.join(filter(str.isdigit, value1)))
-        print(value1)
-    def reset1(self):
-        print("reset white count")
 
-    def on_enter_black(self, *arg):
-        value2 = self.integer_var2.get()
-        if not value2.isdigit():
-            self.integer_var2.set(''.join(filter(str.isdigit, value2)))
-        print(value2)
+    def reset1(self):
+        pass
+
     def reset2(self):
-        print("reset black")
-    
-    def on_enter_ng(self, *arg):
-        value3 = self.integer_var3.get()
-        if not value3.isdigit():
-            self.integer_var3.set(''.join(filter(str.isdigit, value3)))
-        print(value3)
+        pass
         
     def reset3(self):
-        print("reset NG storage")
+        pass
 
     def clicked_start(self):
         pass
