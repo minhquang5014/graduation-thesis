@@ -226,7 +226,6 @@ class SecondFrame():
         self.black_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var2)
         self.black_entry.place(relx=1/4,
                                rely = 2/4, relwidth = 1/4, relheight = 1/4)
-        self.black_entry.bind('<Return>', self.on_enter_black)
 
         self.black_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
         self.black_show.place(relx = 2/4,
@@ -247,7 +246,6 @@ class SecondFrame():
         self.ng_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var3)
         self.ng_entry.place(relx=1/4,
                                rely = 3/4, relwidth = 1/4, relheight = 1/4)
-        self.ng_entry.bind('<Return>', self.on_enter_ng)
 
         self.black_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
         self.black_show.place(relx = 2/4,

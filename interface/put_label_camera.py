@@ -20,9 +20,9 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
     if ret:
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
-        # if enable_detection == True:
-        #     from model.ObjectDetection import ObjectDetection
-        #     frame = ObjectDetection(frame = frame, model="model/custom_train_yolov10s.pt").__call__()
+        if enable_detection == True:
+            from model.ObjectDetection import ObjectDetection
+            frame = ObjectDetection(frame = frame, model="model/yolov8n.pt").__call__()
             
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         current_date = datetime.date.today()
