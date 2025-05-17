@@ -1,10 +1,10 @@
 This is for writing or reading holding register:
 
-0. write NG objects
+0. write black objects
 
-1. write black objects
+1. write white objects
 
-2. write white objects
+2. write NG objects
 
 3. Write start button
 
@@ -33,3 +33,21 @@ This is for writing or reading holding register:
 15. read green light
 
 16. read red light
+
+17. Write the number of NG objects
+
+18. Write the number of black objects
+
+19. Write the number of white objects
+
+20. Reset number of NG objects
+
+21. Reset number of black objects
+
+22. Reset number of white objects
+
+23. Read the number of current NG objects
+
+24. Read the number of current black objects            
+
+25. Read the number of current white objects
