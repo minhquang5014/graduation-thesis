@@ -11,7 +11,7 @@ color_dir = {
     "Sour green cherry": "#c8ffb5"
 }
 
-class MainWindow(create_window.FullscreenWindow):
+class MainWindow(create_window.BiggerWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fg_color = fg_color
@@ -50,10 +50,10 @@ class MainWindow(create_window.FullscreenWindow):
             video_frame_height=self.label_height,
             fg_color = self.fg_color
         )
-        self.after(400, self.read_initial_light1)
-        self.after(400, self.read_initial_light2)
-        self.after(400, self.read_initial_light3)
-        self.after(400, self.read_initial_light4)
+        # self.after(400, self.read_initial_light1)
+        # self.after(400, self.read_initial_light2)
+        # self.after(400, self.read_initial_light3)
+        # self.after(400, self.read_initial_light4)
 
         self.fourth = fourth_frame.FourthFrame(
             screen_width=self.screen_width, 
@@ -175,5 +175,6 @@ class MainWindow(create_window.FullscreenWindow):
         self.root.destroy()
 
 if __name__ == "__main__":
-    MainWindow()
+    # MainWindow(capture_index = "video/video_07332025_11h33m31s.avi")
+    MainWindow(capture_index = 0)
     

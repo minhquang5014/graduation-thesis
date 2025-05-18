@@ -15,14 +15,14 @@ def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=Fal
     return video_label, label_width, label_height
 
 def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video, 
-                 root:tk.Tk, resized_width, resized_height, enable_detection = False):
+                 root:tk.Tk, resized_width, resized_height, enable_detection = True):
     ret, frame = capture.read()
     if ret:
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
         if enable_detection == True:
             from model.ObjectDetection import ObjectDetection
-            frame = ObjectDetection(frame = frame, model="model/yolov8n.pt").__call__()
+            frame = ObjectDetection(frame = frame, model="model/best2.pt").__call__()
             
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         current_date = datetime.date.today()
