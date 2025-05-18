@@ -36,6 +36,9 @@ class MainWindow(create_window.FullscreenWindow):
             fg_color = self.fg_color
         )
         self.second.white_entry.bind('<Return>', self.on_enter_white)
+        self.second.black_entry.bind('<Return>', self.on_enter_black)
+        self.second.ng_entry.bind('<Return>', self.on_enter_ng)
+
 
         self.second.start_button.configure(command=self.custom_start)
         self.second.stop_button.configure(command=self.custom_stop)
@@ -47,6 +50,11 @@ class MainWindow(create_window.FullscreenWindow):
             video_frame_height=self.label_height,
             fg_color = self.fg_color
         )
+        self.after(400, self.read_initial_light1)
+        self.after(400, self.read_initial_light2)
+        self.after(400, self.read_initial_light3)
+        self.after(400, self.read_initial_light4)
+
         self.fourth = fourth_frame.FourthFrame(
             screen_width=self.screen_width, 
             video_frame_width=self.label_width, 
@@ -84,6 +92,31 @@ class MainWindow(create_window.FullscreenWindow):
         self.root.bind('<Escape>', self.exit_fullscreen)
         self.root.mainloop()
 
+    def read_initial_light1(self):  # read state of the conveyor belt
+        result_light1 = self.connect_plc.read(8)
+        if result_light1 == 0:
+            self.third.canvas_list[0].itemconfig(self.canvas, fill="gray")
+        else:
+            self.third.canvas_list[0].itemconfig(self.canvas, fill="green")
+    def read_initial_light2(self):
+        result_light2 = self.connect_plc.read(9)
+        if result_light2 == 0:
+            self.third.canvas_list[1].itemconfig(self.canvas, fill = "gray")
+        else:
+            self.third.canvas_list[1].itemconfig(self.canvas, fill="green")
+    def read_initial_light3(self):
+        result_light3 = self.connect_plc.read(10)
+        if result_light3 == 0:
+            self.third.canvas_list[2].itemconfig(self.canvas, fill = "gray")
+        else:
+            self.third.canvas_list[2].itemconfig(self.canvas, fill="green")
+    def read_initial_light4(self):
+        result_light4 = self.connect_plc.read(10)
+        if result_light4== 0:
+            self.third.canvas_list[3].itemconfig(self.canvas, fill = "gray")
+        else:
+            self.third.canvas_list[3].itemconfig(self.canvas, fill="green")
+
     def custom_start(self):
         self.fourth.insert_textbox(message="Pressing start. The program is now running, sending int to h_reg 3")
         self.connect_plc.write(3, 1)
@@ -104,6 +137,7 @@ class MainWindow(create_window.FullscreenWindow):
         initial_start_state = self.connect_plc.read(5)
         initial_stop_state = self.connect_plc.read(6)
         self.update_lights(initial_start_state, initial_stop_state)
+
     def update_lights(self, state1, state2):
         if state1 == 1:
             self.second.lights_canvas_start.itemconfig(self.second.oval_start, "green")

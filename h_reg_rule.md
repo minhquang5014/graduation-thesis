@@ -30,9 +30,9 @@ This is for writing or reading holding register:
 
 14. read van đẩy sp NG
 
-15. read green light
+15. read manual light
 
-16. read red light
+<!-- 16. read red light -->
 
 17. Write the number of NG objects
 

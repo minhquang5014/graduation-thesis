@@ -83,13 +83,13 @@ class ThirdFrame():
                                  relative_height,
                                  fill = "gray", outline = "black")
       
-      self.text1 = ctk.CTkLabel(self.lights_frame, text="Van xoay", text_color="black", bg_color=self.fg_color,
+      self.text1 = ctk.CTkLabel(self.lights_frame, text="Băng tải", text_color="black", bg_color=self.fg_color,
                                             font=ctk.CTkFont(size=15, weight="bold"))
-      self.text2 = ctk.CTkLabel(self.lights_frame, text="Van đẩy", text_color="black", bg_color=self.fg_color,
+      self.text2 = ctk.CTkLabel(self.lights_frame, text="Van xoay", text_color="black", bg_color=self.fg_color,
                                             font=ctk.CTkFont(size=15, weight="bold"))
-      self.text3 = ctk.CTkLabel(self.lights_frame, text="Van gắp", text_color="black", bg_color=self.fg_color,
+      self.text3 = ctk.CTkLabel(self.lights_frame, text="Van đẩy", text_color="black", bg_color=self.fg_color,
                                              font=ctk.CTkFont(size=15, weight="bold"))    
-      self.text4 = ctk.CTkLabel(self.lights_frame, text="Băng tải", text_color="black", bg_color=self.fg_color,
+      self.text4 = ctk.CTkLabel(self.lights_frame, text="Van gắp", text_color="black", bg_color=self.fg_color,
                                              font=ctk.CTkFont(size=15, weight="bold"))
       
       self.text1.place(relx = (10/480 * self.lights_frame_width + relative_width/2) / self.lights_frame_width,
