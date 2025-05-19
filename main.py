@@ -20,7 +20,7 @@ class MainWindow(create_window.BiggerWindow):
         self.connect_status = self.connect_plc.connectPLC()
         print(self.connect_status)
         self.video_label, self.label_width, self.label_height = put_label_camera.label_to_put_video(
-                self.frame,
+                self.root,
                 screen_width=self.screen_width,
                 screen_height=self.screen_height,
                 fixed_video_label=False
@@ -50,10 +50,10 @@ class MainWindow(create_window.BiggerWindow):
             video_frame_height=self.label_height,
             fg_color = self.fg_color
         )
-        # self.after(400, self.read_initial_light1)
-        # self.after(400, self.read_initial_light2)
-        # self.after(400, self.read_initial_light3)
-        # self.after(400, self.read_initial_light4)
+        self.root.after(400, self.read_initial_light1)
+        self.root.after(400, self.read_initial_light2)
+        self.root.after(400, self.read_initial_light3)
+        self.root.after(400, self.read_initial_light4)
 
         self.fourth = fourth_frame.FourthFrame(
             screen_width=self.screen_width, 
@@ -80,7 +80,7 @@ class MainWindow(create_window.BiggerWindow):
                 self.root,
                 resized_width=self.label_width,
                 resized_height=self.label_height,
-                enable_detection=True
+                enable_detection=False
             )
         
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
@@ -95,39 +95,39 @@ class MainWindow(create_window.BiggerWindow):
     def read_initial_light1(self):  # read state of the conveyor belt
         result_light1 = self.connect_plc.read(8)
         if result_light1 == 0:
-            self.third.canvas_list[0].itemconfig(self.canvas, fill="gray")
+            self.third.canvas1.itemconfig(self.canvas_light1, fill="gray")
         else:
-            self.third.canvas_list[0].itemconfig(self.canvas, fill="green")
+            self.third.canvas1.itemconfig(self.canvas_light1, fill="green")
     def read_initial_light2(self):
         result_light2 = self.connect_plc.read(9)
         if result_light2 == 0:
-            self.third.canvas_list[1].itemconfig(self.canvas, fill = "gray")
+            self.third.canvas_list[1].itemconfig(self.canvas2, fill = "gray")
         else:
-            self.third.canvas_list[1].itemconfig(self.canvas, fill="green")
+            self.third.canvas_list[1].itemconfig(self.canvas2, fill="green")
     def read_initial_light3(self):
         result_light3 = self.connect_plc.read(10)
         if result_light3 == 0:
-            self.third.canvas_list[2].itemconfig(self.canvas, fill = "gray")
+            self.third.canvas_list[2].itemconfig(self.canvas3, fill = "gray")
         else:
-            self.third.canvas_list[2].itemconfig(self.canvas, fill="green")
+            self.third.canvas_list[2].itemconfig(self.canvas3, fill="green")
     def read_initial_light4(self):
         result_light4 = self.connect_plc.read(10)
         if result_light4== 0:
-            self.third.canvas_list[3].itemconfig(self.canvas, fill = "gray")
+            self.third.canvas_list[3].itemconfig(self.canvas4, fill = "gray")
         else:
-            self.third.canvas_list[3].itemconfig(self.canvas, fill="green")
+            self.third.canvas_list[3].itemconfig(self.canvas4, fill="green")
 
     def custom_start(self):
         self.fourth.insert_textbox(message="Pressing start. The program is now running, sending int to h_reg 3")
         self.connect_plc.write(3, 1)
         self.connect_plc.write(4, 0)
-        self.after(400, self.reset_start_stop_button)
+        self.root.after(400, self.reset_start_stop_button)
         
     def custom_stop(self):
         self.fourth.insert_textbox(message="Pressing stop. Stops the program now, sending int to h_reg 4")
         self.connect_plc.write(4, 1)
         self.connect_plc.write(3, 0)
-        self.after(400, self.reset_start_stop_button)
+        self.root.after(400, self.reset_start_stop_button)
 
     def reset_start_stop_button(self):
         self.connect_plc.write(4, 0)

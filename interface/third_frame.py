@@ -48,12 +48,24 @@ class ThirdFrame():
       self.canvas_list = []
 
       # create 4 canvas for output lighting system
-      for i in range(4):
-         self.canvas = ctk.CTkCanvas(self.lights_frame,
+
+      self.canvas1 = ctk.CTkCanvas(self.lights_frame,
                                  bg = self.fg_color, 
                                  highlightthickness = 0, 
                                  )
-         self.canvas_list.append(self.canvas)
+      self.canvas2 = ctk.CTkCanvas(self.lights_frame,
+                                 bg = self.fg_color, 
+                                 highlightthickness = 0, 
+                                 )
+      self.canvas3= ctk.CTkCanvas(self.lights_frame,
+                                 bg = self.fg_color, 
+                                 highlightthickness = 0, 
+                                 )
+      self.canvas4= ctk.CTkCanvas(self.lights_frame,
+                                 bg = self.fg_color, 
+                                 highlightthickness = 0, 
+                                 )
+
       
       self.lights_canvas_height = self.lights_frame_height * 5/6
       self.lights_canvas_y = self.lights_frame_height * 1/6
@@ -61,27 +73,43 @@ class ThirdFrame():
       relative_width = 10/48 * self.lights_frame_width
       relative_height = 9/15 * self.lights_canvas_height
       
-      self.canvas_list[0].place(relx = 10/480,
+      self.canvas1.place(relx = 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                  relwidth = 10/48,
                                  relheight = relative_height / self.lights_frame_height)
-      self.canvas_list[1].place(relx = 1/4 + 10/480,
+      self.canvas2.place(relx = 1/4 + 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                 relwidth = 10/48,
                                 relheight = relative_height / self.lights_frame_height)
-      self.canvas_list[2].place(relx = 1/2 + 10/480,
+      self.canvas3.place(relx = 1/2 + 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                 relwidth = 10/48,
                                 relheight = relative_height / self.lights_frame_height)
-      self.canvas_list[3].place(relx = 3/4 + 10/480,
+      self.canvas4.place(relx = 3/4 + 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                 relwidth = 10/48,
                                 relheight = relative_height / self.lights_frame_height)
-      for self.canvas in self.canvas_list:
-         self.canvas.create_oval(0, 0, 
-                                 10/48 * self.lights_frame_width,
-                                 relative_height,
-                                 fill = "gray", outline = "black")
+      # for self.canvas in self.canvas_list:
+      #    self.canvas.create_oval(0, 0, 
+      #                            10/48 * self.lights_frame_width,
+      #                            relative_height,
+      #                            fill = "gray", outline = "black")
+      self.canvas_light1 = self.canvas1.create_oval(0, 0, 
+                                                   10/48 * self.lights_frame_width,
+                                                   relative_height,
+                                                   fill = "gray", outline = "black")
+      self.canvas_light2 = self.canvas2.create_oval(0, 0, 
+                                                   10/48 * self.lights_frame_width,
+                                                   relative_height,
+                                                   fill = "gray", outline = "black")
+      self.canvas_light3 = self.canvas3.create_oval(0, 0, 
+                                                   10/48 * self.lights_frame_width,
+                                                   relative_height,
+                                                   fill = "gray", outline = "black")
+      self.canvas_light4 = self.canvas4.create_oval(0, 0, 
+                                                   10/48 * self.lights_frame_width,
+                                                   relative_height,
+                                                   fill = "gray", outline = "black")
       
       self.text1 = ctk.CTkLabel(self.lights_frame, text="Băng tải", text_color="black", bg_color=self.fg_color,
                                             font=ctk.CTkFont(size=15, weight="bold"))

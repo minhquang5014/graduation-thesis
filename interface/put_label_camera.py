@@ -15,7 +15,7 @@ def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=Fal
     return video_label, label_width, label_height
 
 def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video, 
-                 root:tk.Tk, resized_width, resized_height, enable_detection = True):
+                 root:tk.Tk, resized_width, resized_height, enable_detection = False):
     ret, frame = capture.read()
     if ret:
         frame = cv2.flip(frame, 1)

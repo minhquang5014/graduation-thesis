@@ -27,7 +27,7 @@ class PLCConnection:
     def read(self, address, count=1):
         if self.connect_status:
             # Không sử dụng 'unit' trong pymodbus 3.x
-            result = self.client.read_holding_registers(address, count)
+            result = self.client.read_holding_registers(address=address, count=count)
             return result.registers[0] if not result.isError() else None
         else:
             print("Not connected. Cannot read.")

@@ -131,11 +131,11 @@ class SecondFrame():
         self.oval_start = self.lights_canvas_start.create_oval(0, 0, 
                                              3/16 * self.button_frame_width, 
                                              7/8 * self.button_frame_height, 
-                                             fill="green", outline = "black")
+                                             fill="gray", outline = "black")
         self.oval_stop = self.lights_canvas_stop.create_oval(0, 0, 
                                              3/16 * self.button_frame_width, 
                                              7/8 * self.button_frame_height,
-                                             fill="red", outline="black")
+                                             fill="gray", outline="black")
         # self.lights_start = ctk.CTkLabel(self.lights_frame, text="Start", text_color="black", bg_color=self.fg_color,
         #                                         font=ctk.CTkFont(size=10, weight="bold"))
         # self.lights_start.place(relx = 1/4, rely = 1, anchor = tk.CENTER)
