@@ -20,42 +20,36 @@ class ObjectDetection:
     # def predict(self):
     #     return self.model(self.frame)
     
-    def plot_boxes(self, results):
-        xyxys = []
+    def plot_boxes(self, results, conf_threshold = 0.5):
+        xyxys =[]
         confidence = []
         class_ids = []
 
-        for result in results[0]:
-            class_id = result.boxes.cls.cpu().numpy().astype(int)
-            if class_id == 0:
-                # get the coordinate
-                xyxys.append(result.boxes.xyxy.cpu().numpy())
+        boxes = results[0].boxes
+        class_array = boxes.cls.cpu().numpy().astype(int)
+        conf_array = boxes.conf.cpu().numpy()
+        xyxy_array = boxes.xyxy.cpu().numpy()
 
-                # get the confidence score
-                confidence.append(result.boxes.conf.cpu().numpy())
+        for class_id, conf, xyxy in zip(class_array, conf_array, xyxy_array):
+            if conf < conf_threshold:
+                continue
+            xyxys.append(xyxy)
+            confidence.append(conf)
+            class_ids.append(class_id)
 
-                class_ids.append(result.boxes.cls.cpu().numpy().astype(int))
-                
-        detections = Detections(
-                xyxy=results[0].boxes.xyxy.cpu().numpy(),
-                confidence=results[0].boxes.conf.cpu().numpy(),
-                class_id=results[0].boxes.cls.cpu().numpy().astype(int)
-        )
-        for bbox, confidence, class_id in zip(detections.xyxy, detections.confidence, detections.class_id):
-            # if confidence 
-            self.labels = [f"{self.CLASS_NAMES_DICT[class_id]}"]
-            
-            #crappu code by the way
-            x1, y1, x2, y2 = bbox[0], bbox[1], bbox[2], bbox[3]
-            
-            # print(x1, y1, x2, y2)
+        for bbox, conf, class_id in zip(xyxys, confidence, class_ids):
+            x1, y1, x2, y2 = bbox
+            label = self.CLASS_NAMES_DICT.get(class_id, str(class_id))
+
+            # Draw rectangle
             cv2.rectangle(self.frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 255), 2)
 
-            # frame = self.box_annotator.annotate(scene = frame, detections=detections)
-            cv2.putText(self.frame, f"{self.labels[0]}, conf: {confidence:0.2f}", (int(x1), int(y1-20)),
-                       cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        
+            # Draw label with confidence
+            cv2.putText(self.frame, f"{label}, conf: {conf:.2f}", (int(x1), int(y1) - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
         return self.frame
+    
     def __call__(self):
         start_time = time()
         results = self.model(self.frame)

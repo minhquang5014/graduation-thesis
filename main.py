@@ -80,7 +80,7 @@ class MainWindow(create_window.BiggerWindow):
                 self.root,
                 resized_width=self.label_width,
                 resized_height=self.label_height,
-                enable_detection=False
+                enable_detection=True
             )
         
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
