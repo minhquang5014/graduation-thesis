@@ -111,7 +111,7 @@ class MainWindow(create_window.BiggerWindow):
         else:
             self.third.canvas_list[2].itemconfig(self.canvas3, fill="green")
     def read_initial_light4(self):
-        result_light4 = self.connect_plc.read(10)
+        result_light4 = self.connect_plc.read(11)
         if result_light4== 0:
             self.third.canvas_list[3].itemconfig(self.canvas4, fill = "gray")
         else:
