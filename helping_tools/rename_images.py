@@ -2,7 +2,7 @@ from pathlib import Path
 import cv2
 import shutil
 import os
-
+from datetime import datetime
 # === CONFIG ===
 folder_path = Path("images")
 image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
@@ -39,14 +39,15 @@ temp_files = sorted([f for f in folder_path.iterdir() if f.name.startswith("temp
 renamed_files = []
 
 for idx, file in enumerate(temp_files, start=start_index):
-    new_name = f"{prefix}{str(idx).zfill(zero_padding)}{file.suffix.lower()}"
+    from time import time
+    new_name = f"{prefix}_{time()}{str(idx).zfill(zero_padding)}{file.suffix.lower()}"
     new_path = folder_path / new_name
     file.rename(new_path)
     renamed_files.append(new_path)
     print(f"✅ {file.name} -> {new_name}")
 
 # === SPLIT INTO FOLDERS OF MAX 20MB ===
-folder_counter = 1
+folder_counter = 4
 current_folder = folder_path / f"set_{folder_counter}"
 current_folder.mkdir(exist_ok=True)
 current_size = 0

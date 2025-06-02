@@ -11,7 +11,7 @@ color_dir = {
     "Sour green cherry": "#c8ffb5"
 }
 
-class MainWindow(create_window.BiggerWindow):
+class MainWindow(create_window.CreateWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fg_color = fg_color
