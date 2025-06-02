@@ -9,9 +9,15 @@ colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 
 
 class ObjectDetection:
-    def __init__(self, frame, model):
+    def __init__(self, model):
+        self.lower_red = np.array([0, 100, 100])
+        self.upper_red = np.array([12, 255, 255])
+        self.lower_green = np.array([30, 100, 100])
+        self.upper_green = np.array([92, 255, 255])
+        self.lower_blue = np.array([95, 120, 120])
+        self.upper_blue = np.array([130, 255, 255])
+
         self.device = 'cuda' if torch.cuda.is_available() else "cpu"
-        self.frame = frame
         self.model = YOLO(model)
         self.model.fuse()
         self.model.to(self.device)
@@ -20,8 +26,8 @@ class ObjectDetection:
     # def predict(self):
     #     return self.model(self.frame)
     
-    def plot_boxes(self, results, conf_threshold = 0.5):
-        xyxys =[]
+    def plot_boxes(self, results, frame, conf_threshold = 0.6):
+        xyxys = []
         confidence = []
         class_ids = []
 
@@ -36,28 +42,63 @@ class ObjectDetection:
             xyxys.append(xyxy)
             confidence.append(conf)
             class_ids.append(class_id)
-
+        boxes_out = []
         for bbox, conf, class_id in zip(xyxys, confidence, class_ids):
-            x1, y1, x2, y2 = bbox
+            x1, y1, x2, y2 = bbox.astype(int)
             label = self.CLASS_NAMES_DICT.get(class_id, str(class_id))
 
             # Draw rectangle
-            cv2.rectangle(self.frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 255), 2)
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 255), 2)
 
             # Draw label with confidence
-            cv2.putText(self.frame, f"{label}, conf: {conf:.2f}", (int(x1), int(y1) - 10),
+            cv2.putText(frame, f"{label}, conf: {conf:.2f}", (int(x1), int(y1) - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-
-        return self.frame
+            boxes_out.append(((x1, y1, x2, y2), class_id))
+        return frame, boxes_out
     
-    def __call__(self):
+    def __call__(self, frame):
         start_time = time()
-        results = self.model(self.frame)
-        self.frame = self.plot_boxes(results)
+        results = self.model(frame)
+        frame, boxes = self.plot_boxes(results, frame)
+        if len(boxes) != 0:
+            for (x1, y1, x2, y2), class_id in boxes:
+                if class_id == 0:
+                    continue
+                w1 = x2 - x1
+                h1 = y2 - y1
+                ROI = frame[y1:y2, x1:x2]
+
+                # convert the ROI to HSV color format
+                hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
+
+                masked_red = cv2.inRange(hsv_roi, self.lower_red, self.upper_red)
+                masked_blue = cv2.inRange(hsv_roi, self.lower_blue, self.upper_blue)
+                masked_green = cv2.inRange(hsv_roi, self.lower_green, self.upper_green)
+
+                contours_red, _ = cv2.findContours(masked_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours_blue, _ = cv2.findContours(masked_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours_green, _ = cv2.findContours(masked_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                
+                for contour in contours_red:
+                    if cv2.contourArea(contour) > 1/4 * w1 * h1:
+                        x, y, w, h = cv2.boundingRect(contour)
+                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
+                        cv2.putText(frame, "red", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                for contour in contours_blue:
+                    if cv2.contourArea(contour) > 1/4 * w1 * h1:
+                        x, y, w, h = cv2.boundingRect(contour)
+                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
+                        cv2.putText(frame, "blue", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                for contour in contours_green:
+                    if cv2.contourArea(contour) > 1/4 * w1 * h1:
+                        x, y, w, h = cv2.boundingRect(contour)
+                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
+                        cv2.putText(frame, "green", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
         end_time = time()
 
         if start_time - end_time != 0:
             fps = 1/np.round(end_time - start_time, 2)
-        cv2.putText(self.frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-        return self.frame
+        cv2.putText(frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+        return frame
     
