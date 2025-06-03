@@ -99,6 +99,6 @@ class ObjectDetection:
 
         if start_time - end_time != 0:
             fps = 1/np.round(end_time - start_time, 2)
-        cv2.putText(frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-        return frame
+        # cv2.putText(frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+        return frame, fps
     

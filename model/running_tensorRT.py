@@ -4,7 +4,10 @@ import random
 import time
 import pathlib
 from ultralytics import YOLO
-import model.utils as utils
+try:
+    import model.utils as utils
+except ModuleNotFoundError:
+    import utils
 import numpy as np
 # from modules.autobackend import AutoBackend
 import yaml
@@ -41,107 +44,133 @@ class TensorRTDetection:
         conf = result.boxes.conf.numpy()
         cls = result.boxes.cls.numpy().astype(int)
 
-        # class_ids = []
-        # confidence = []
-        # xyxys = []
-        # for class_id, conf, xyxy in zip(cls, conf, box):
-        #     if conf < CONF_THRESHOLD:
-        #         continue
-        #     xyxys.append(xyxy)
-        #     confidence.append(conf)
-        #     class_ids.append(class_id)
-        # boxes_out = []
-        # for bbox, conf, class_id in zip(xyxys, confidence, class_ids):
-        #     x1, y1, x2, y2 = bbox.astype(int)
-        #     label = self.CLASS_NAMES_DICT.get(class_id, str(class_id))
-
-        #     # Draw rectangle
-        #     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 255), 2)
-
-        #     # Draw label with confidence
-        #     cv2.putText(frame, f"{label}, conf: {conf:.2f}", (int(x1), int(y1) - 10),
-        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-        #     boxes_out.append(((x1, y1, x2, y2), class_id))
-        # return frame, boxes_out
+        return cls, conf, box
 
     def detection(self, frame):
-        frame_count = 0
-        total_fps = 0
-        start = time.time()
+        start_time = time.time()
         cls, conf, box = self.get_detection_result(frame)
+
+        fps = 0
+
         class_ids = []
         confidence = []
         xyxys = []
-        for class_id, conf, xyxy in zip(cls, conf, box):
-            if conf < CONF_THRESHOLD:
+        boxes_out = []
+
+        for class_id, conf_score, xyxy in zip(cls, conf, box):
+            if conf_score < CONF_THRESHOLD:
                 continue
             xyxys.append(xyxy)
-            confidence.append(conf)
+            confidence.append(conf_score)
             class_ids.append(class_id)
-
         
         detection_output = list(zip(class_ids, confidence, xyxys))
         frame = utils.draw_box(frame, detection_output, self.label_map, self.color)
 
-        end = time.time()
-        if (end - start) != 0:
-            fps = 1 / (end - start)
-        # total_fps += fps
-        # frame_count += 1
-        # avg_fps = total_fps / frame_count
+        # Draw boxes and prepare for ROI processing
+        for bbox, conf_score, class_id in zip(xyxys, confidence, class_ids):
+            x1, y1, x2, y2 = bbox.astype(int)
+            boxes_out.append(((x1, y1, x2, y2), class_id))
+
+            if class_id == 0:
+                continue  # Skip if class_id is 0
+
+            w1, h1 = x2 - x1, y2 - y1
+            ROI = frame[y1:y2, x1:x2]
+            hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
+
+            # Apply color masks
+            masked_red = cv2.inRange(hsv_roi, self.lower_red, self.upper_red)
+            masked_blue = cv2.inRange(hsv_roi, self.lower_blue, self.upper_blue)
+            masked_green = cv2.inRange(hsv_roi, self.lower_green, self.upper_green)
+
+            # Find contours and annotate
+            for mask, color_name, color_bgr in [
+                (masked_red, "red", (0, 0, 255)),
+                (masked_blue, "blue", (255, 0, 0)),
+                (masked_green, "green", (0, 255, 0))
+            ]:
+                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                for contour in contours:
+                    if cv2.contourArea(contour) > 0.25 * w1 * h1:
+                        x, y, w, h = cv2.boundingRect(contour)
+                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)
+                        cv2.putText(frame, color_name, (x + x1, y + y1 - 10),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_bgr, 2)
+
+        end_time = time.time()
+        if (end_time - start_time) > 0:
+            fps = 1 / (end_time - start_time)
 
         return frame, fps
 
     def detection_webcam(self):
-        self.model = YOLO(self.model_path)
-        label_map = self.load_class_names_from_yaml()
-        COLORS = [[random.randint(0, 255) for _ in range(3)] for _ in label_map]
+        cap = cv2.VideoCapture(self.video_capture)
+        while cap.isOpened():
+            ret, frame = cap.read()
+            start_time = time.time()
+            cls, conf, box = self.get_detection_result(frame)
 
-        cap = cv2.VideoCapture(self.video_capture)  # 0 = default webcam
-
-        frame_count = 0
-        total_fps = 0
-
-        while True:
-            ret, self.frame = cap.read()
-            if not ret:
-                break
-            self.frame = cv2.flip(self.frame, 1)
-            start = time.time()
-            cls, conf, box = self.get_detection_result()
             class_ids = []
             confidence = []
             xyxys = []
-            for class_id, conf, xyxy in zip(cls, conf, box):
-                if conf < CONF_THRESHOLD:
+            boxes_out = []
+
+            for class_id, conf_score, xyxy in zip(cls, conf, box):
+                if conf_score < CONF_THRESHOLD:
                     continue
                 xyxys.append(xyxy)
-                confidence.append(conf)
+                confidence.append(conf_score)
                 class_ids.append(class_id)
+            
             detection_output = list(zip(class_ids, confidence, xyxys))
-            self.frame = utils.draw_box(self.frame, detection_output, label_map, COLORS)
+            frame = utils.draw_box(frame, detection_output, self.label_map, self.color)
 
-            end = time.time()
-            if (end - start) != 0:
-                fps = 1 / (end - start)
-                print(fps)
-            total_fps += fps
-            frame_count += 1
-            avg_fps = total_fps / frame_count
+            # Draw boxes and prepare for ROI processing
+            for bbox, conf_score, class_id in zip(xyxys, confidence, class_ids):
+                x1, y1, x2, y2 = bbox.astype(int)
+                boxes_out.append(((x1, y1, x2, y2), class_id))
 
-            cv2.putText(self.frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+                if class_id == 0:
+                    continue  # Skip if class_id is 0
 
-            return self.frame
+                w1, h1 = x2 - x1, y2 - y1
+                ROI = frame[y1:y2, x1:x2]
+                hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
 
-        #     image_output = utils.draw_fps(avg_fps, image_output)
+                # Apply color masks
+                masked_red = cv2.inRange(hsv_roi, self.lower_red, self.upper_red)
+                masked_blue = cv2.inRange(hsv_roi, self.lower_blue, self.upper_blue)
+                masked_green = cv2.inRange(hsv_roi, self.lower_green, self.upper_green)
 
-        #     cv2.imshow("YOLOv8 Webcam Detection", image_output)
+                # Find contours and annotate
+                for mask, color_name, color_bgr in [
+                    (masked_red, "red", (0, 0, 255)),
+                    (masked_blue, "blue", (255, 0, 0)),
+                    (masked_green, "green", (0, 255, 0))
+                ]:
+                    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    for contour in contours:
+                        if cv2.contourArea(contour) > 0.25 * w1 * h1:
+                            x, y, w, h = cv2.boundingRect(contour)
+                            cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)
+                            cv2.putText(frame, color_name, (x + x1, y + y1 - 10),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_bgr, 2)
 
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
+            end_time = time.time()
+            if (end_time - start_time) > 0:
+                fps = 1 / (end_time - start_time)
 
-        # cap.release()
-        # cv2.destroyAllWindows()
+            image_output = utils.draw_fps(fps, frame)
 
-# tensorRT = TensorRTDetection(video_capture="video/1.avi", model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
-# tensorRT.detection_webcam()
+            cv2.imshow("YOLOv8 Webcam Detection", image_output)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    tensorRT = TensorRTDetection(video_capture="video/3.avi", model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
+    tensorRT.detection_webcam()

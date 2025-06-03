@@ -49,19 +49,19 @@ class ThirdFrame():
 
       # create 4 canvas for output lighting system
 
-      self.canvas1 = ctk.CTkCanvas(self.lights_frame,
+      self.canvas1_obj = ctk.CTkCanvas(self.lights_frame,
                                  bg = self.fg_color, 
                                  highlightthickness = 0, 
                                  )
-      self.canvas2 = ctk.CTkCanvas(self.lights_frame,
+      self.canvas2_obj = ctk.CTkCanvas(self.lights_frame,
                                  bg = self.fg_color, 
                                  highlightthickness = 0, 
                                  )
-      self.canvas3= ctk.CTkCanvas(self.lights_frame,
+      self.canvas3_obj= ctk.CTkCanvas(self.lights_frame,
                                  bg = self.fg_color, 
                                  highlightthickness = 0, 
                                  )
-      self.canvas4= ctk.CTkCanvas(self.lights_frame,
+      self.canvas4_obj = ctk.CTkCanvas(self.lights_frame,
                                  bg = self.fg_color, 
                                  highlightthickness = 0, 
                                  )
@@ -73,19 +73,19 @@ class ThirdFrame():
       relative_width = 10/48 * self.lights_frame_width
       relative_height = 9/15 * self.lights_canvas_height
       
-      self.canvas1.place(relx = 10/480,
+      self.canvas1_obj.place(relx = 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                  relwidth = 10/48,
                                  relheight = relative_height / self.lights_frame_height)
-      self.canvas2.place(relx = 1/4 + 10/480,
+      self.canvas2_obj.place(relx = 1/4 + 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                 relwidth = 10/48,
                                 relheight = relative_height / self.lights_frame_height)
-      self.canvas3.place(relx = 1/2 + 10/480,
+      self.canvas3_obj.place(relx = 1/2 + 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                 relwidth = 10/48,
                                 relheight = relative_height / self.lights_frame_height)
-      self.canvas4.place(relx = 3/4 + 10/480,
+      self.canvas4_obj.place(relx = 3/4 + 10/480,
                                 rely = 1/6 + (self.lights_canvas_height * 2/15) / self.lights_frame_height,
                                 relwidth = 10/48,
                                 relheight = relative_height / self.lights_frame_height)
@@ -94,19 +94,19 @@ class ThirdFrame():
       #                            10/48 * self.lights_frame_width,
       #                            relative_height,
       #                            fill = "gray", outline = "black")
-      self.canvas_light1 = self.canvas1.create_oval(0, 0, 
+      self.canvas_light1 = self.canvas1_obj.create_oval(0, 0, 
                                                    10/48 * self.lights_frame_width,
                                                    relative_height,
                                                    fill = "gray", outline = "black")
-      self.canvas_light2 = self.canvas2.create_oval(0, 0, 
+      self.canvas_light2 = self.canvas2_obj.create_oval(0, 0, 
                                                    10/48 * self.lights_frame_width,
                                                    relative_height,
                                                    fill = "gray", outline = "black")
-      self.canvas_light3 = self.canvas3.create_oval(0, 0, 
+      self.canvas_light3 = self.canvas3_obj.create_oval(0, 0, 
                                                    10/48 * self.lights_frame_width,
                                                    relative_height,
                                                    fill = "gray", outline = "black")
-      self.canvas_light4 = self.canvas4.create_oval(0, 0, 
+      self.canvas_light4 = self.canvas4_obj.create_oval(0, 0, 
                                                    10/48 * self.lights_frame_width,
                                                    relative_height,
                                                    fill = "gray", outline = "black")
@@ -132,11 +132,12 @@ class ThirdFrame():
       self.text4.place(relx = ((3/4 + 10/480) * self.lights_frame_width + relative_width/2) / self.lights_frame_width,
                          rely = (relative_height + 4/15 * self.lights_canvas_height + self.lights_canvas_y) / self.lights_frame_height,
                          anchor = "center")
+      
 
    def change_appearance_mode(self):
       self.frame_for_option_menu = ctk.CTkFrame(self.third_frame, fg_color = self.fg_color)
       self.appearance_mode_option_menu = ctk.CTkOptionMenu(master = self.frame_for_option_menu, values = ["Peace puff", "Sour green cherry"], 
-                                                            command=self.change_color())
+                                                            command=self.change_color)
       self.frame_for_option_menu.place(relx = 0, 
                                        rely = 0, 
                                        relwidth = (self.video_frame_width - self.lights_frame_width - 1/64 * self.video_frame_width) / self.video_frame_width, 
