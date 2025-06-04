@@ -19,6 +19,8 @@ class MainWindow(create_window.BiggerWindow):
         self.capture_index = capture_index
         self.connect_plc = PLCConnection(host = '192.168.0.1')
         self.connect_status = self.connect_plc.connectPLC()
+        self.connect_plc.write(16, 1)
+        
         print(self.connect_status)
 
         # first frame to put the label video
@@ -98,51 +100,51 @@ class MainWindow(create_window.BiggerWindow):
         self.root.mainloop()
 
     def read_initial_light1(self):  # read state of the conveyor belt
-        # result_light1 = self.connect_plc.read(8)
-        if self.test_value == 0:
+        result_light1 = self.connect_plc.read(9)
+        if result_light1 == 0:
             self.third.canvas1_obj.itemconfig(self.third.canvas_light1, fill="gray")
         else:
             self.third.canvas1_obj.itemconfig(self.third.canvas_light1, fill="green")
         self.root.after(200, self.read_initial_light1)
     def read_initial_light2(self):
-        # result_light2 = self.connect_plc.read(9)
-        if self.test_value == 0:
+        result_light2 = self.connect_plc.read(10)
+        if result_light2 == 0:
             self.third.canvas2_obj.itemconfig(self.third.canvas_light2, fill = "gray")
         else:
             self.third.canvas2_obj.itemconfig(self.third.canvas_light2, fill="green")
     def read_initial_light3(self):
-        # result_light3 = self.connect_plc.read(10)
-        if self.test_value == 0:
+        result_light3 = self.connect_plc.read(11)
+        if result_light3 == 0:
             self.third.canvas3_obj.itemconfig(self.third.canvas_light3, fill = "gray")
         else:
             self.third.canvas3_obj.itemconfig(self.third.canvas_light3, fill="green")
     def read_initial_light4(self):
-        # result_light4 = self.connect_plc.read(11)
-        if self.test_value== 0:
+        result_light4 = self.connect_plc.read(12)
+        if result_light4 == 0:
             self.third.canvas4_obj.itemconfig(self.third.canvas_light4, fill = "gray")
         else:
             self.third.canvas4_obj.itemconfig(self.third.canvas_light4, fill="green")
 
     def custom_start(self):
         self.fourth.insert_textbox(message="Pressing start. The program is now running, sending int to h_reg 3")
-        self.connect_plc.write(3, 1)
-        self.connect_plc.write(4, 0)
+        self.connect_plc.write(4, 1)
+        self.connect_plc.write(5, 0)
         self.root.after(400, self.reset_start_stop_button)
         
     def custom_stop(self):
         self.fourth.insert_textbox(message="Pressing stop. Stops the program now, sending int to h_reg 4")
-        self.connect_plc.write(4, 1)
-        self.connect_plc.write(3, 0)
+        self.connect_plc.write(5, 1)
+        self.connect_plc.write(4, 0)
         self.root.after(400, self.reset_start_stop_button)
 
     def reset_start_stop_button(self):
         self.connect_plc.write(4, 0)
-        self.connect_plc.write(3, 0)
+        self.connect_plc.write(5, 0)
         self.read_start_stop_lights()
     def read_start_stop_lights(self):
-        initial_start_state = self.connect_plc.read(5)
-        initial_stop_state = self.connect_plc.read(6)
-        self.update_lights(self.test_value, self.test_value)
+        initial_start_state = self.connect_plc.read(6)
+        initial_stop_state = self.connect_plc.read(7)
+        self.update_lights(initial_start_state, initial_stop_state)
 
     def update_lights(self, state1, state2):
         if state1 == 1:
@@ -156,10 +158,10 @@ class MainWindow(create_window.BiggerWindow):
 
     def custom_auto_manual_switch(self):
         if self.auto_manual_switch.get() == 1:
-            self.connect_plc.write(7, 1)
+            self.connect_plc.write(8, 1)
             self.fourth.insert_textbox(message="Switching to manual mode now")
         else:
-            self.connect_plc.write(7, 0)
+            self.connect_plc.write(8, 0)
             self.fourth.insert_textbox(message="Switching back to auto mode")
     
 
@@ -181,6 +183,7 @@ class MainWindow(create_window.BiggerWindow):
         if not value4.isdigit():
             self.second.integer_var4.set(''.join(filter(str.isdigit, value4)))
     def exit_fullscreen(self, event):
+        self.connect_plc.write(16, 0)
         self.capture.release()
         cv2.destroyAllWindows()
         self.root.destroy()
