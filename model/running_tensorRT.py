@@ -102,7 +102,7 @@ class TensorRTDetection:
         if (end_time - start_time) > 0:
             fps = 1 / (end_time - start_time)
 
-        return frame, fps
+        return frame, fps, color_name
 
     def detection_webcam(self):
         cap = cv2.VideoCapture(self.video_capture)

@@ -1,25 +1,20 @@
 from interface import create_window, second_frame, third_frame, fourth_frame
 from interface import put_label_camera
 import cv2
-import customtkinter as ctk
 import functools
 from PLC.plc_connection import PLCConnection
 from threading import Thread
+import tkinter as tk
+import customtkinter as ctk
 
 color_dir = {
     "Peace puff": "#ffd7b5",
     "Sour green cherry": "#c8ffb5"
 }
 
+DEFAULT_NUMBER_OBJ = 10
 
-# return a string, match the string with the number of holding register in the dictionary
-# sending_to_plc = {
-#     "red": 0.
-#     ""
-# }
-
-
-class MainWindow(create_window.BiggerWindow):
+class MainWindow(create_window.CreateWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.test_value = 1
@@ -55,7 +50,17 @@ class MainWindow(create_window.BiggerWindow):
 
         self.second.start_button.configure(command=self.custom_start)
         self.second.stop_button.configure(command=self.custom_stop)
-        
+
+        # override the reset button commands on the second frame
+        self.second.red_reset.configure(command=self.reset1)
+        self.second.reset_green.configure(command=self.reset2)
+        self.second.blue_reset.configure(command=self.reset3)
+        self.second.NG_reset.configure(command=self.reset4)
+        self.root.after(1000, self.check_storage_limit_red)
+        self.root.after(1000, self.check_storage_limit_green)
+        self.root.after(1000, self.check_storage_limit_blue)
+        self.root.after(1000, self.check_storage_limit_NG)
+
         self.root.after(400, self.read_start_stop_lights)
 
         self.third = third_frame.ThirdFrame(
@@ -172,24 +177,178 @@ class MainWindow(create_window.BiggerWindow):
             self.connect_plc.write(8, 0)
             self.fourth.insert_textbox(message="Switching back to auto mode")
     
-
-
+    
+    # check if the input value is a integer
     def on_enter_red(self, *arg):
         value1 = self.second.integer_var.get()
         if not value1.isdigit():
             self.second.integer_var.set(''.join(filter(str.isdigit, value1)))
+    def validate_integer_red(self, *args):   
+        value = self.second.integer_var.get()
+        if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
+            self.fourth.insert_textbox(f"You have entered {value} so {value} red objects will be in process")
+            self.connect_plc.write(17, int(value))
+        elif value.isdigit() and int(value) <= DEFAULT_NUMBER_OBJ:
+            self.fourth.insert_textbox(f"By default, {DEFAULT_NUMBER_OBJ} objects will be in the process of classification")
+            self.connect_plc.write(17, DEFAULT_NUMBER_OBJ)
+        else:
+            self.fourth.insert_textbox("Invalid Input, only integers are allowed")
+    def reset1(self):
+        self.connect_plc.write(21, 1)
+        self.root.after(400, lambda: self.connect_plc.write(21, 0))
+        self.connect_plc.write(17, DEFAULT_NUMBER_OBJ)
+        self.second.red_show.configure(state=tk.NORMAL)
+        self.second.red_show.delete("1.0", tk.END)
+        self.second.red_show.insert(tk.END, "0")
+        self.second.red_show.tag_add("center", "1.0", "end")
+        self.second.red_show.configure(state=tk.DISABLED)
+        self.second.integer_var.trace_remove("write", self.trace_id)
+        self.second.integer_var.set("")
+        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_red)
+        self.fourth.insert_textbox(f"Reset red object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
+    def check_storage_limit_red(self):
+        try:
+            # get the input value
+            limit = int(self.second.integer_var.get())
+        except ValueError:
+            limit = DEFAULT_NUMBER_OBJ
+        storage_red = self.connect_plc.read(30)
+        if storage_red == 1:
+            self.fourth.insert_textbox("The storage for red is full")
+        else:
+            if limit > DEFAULT_NUMBER_OBJ:
+                self.fourth.insert_textbox(f"You have entered {limit} for red storage, so {limit} objects will be in process of classification")
+        self.root.after(1000, self.check_storage_limit_red)
+
+
     def on_enter_green(self, *arg):
         value2 = self.second.integer_var2.get()
         if not value2.isdigit():
             self.second.integer_var2.set(''.join(filter(str.isdigit, value2)))
+    def validate_integer_green(self, *args):
+        value = self.second.integer_var2.get()
+        if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
+            self.fourth.insert_textbox(f"You have entered {value} so {value} green objects will be in process")
+            self.connect_plc.write(18, int(value))
+        elif value.isdigit() and int(value) <= DEFAULT_NUMBER_OBJ:
+            self.fourth.insert_textbox(f"By default, {DEFAULT_NUMBER_OBJ} objects will be in the process of classification")
+            self.connect_plc.write(18, DEFAULT_NUMBER_OBJ)
+        else:
+            self.fourth.insert_textbox("Invalid Input, only integers are allowed")
+    def reset2(self):
+        self.connect_plc.write(22, 1)
+        self.root.after(400, lambda: self.connect_plc.write(22, 0))
+        self.connect_plc.write(18, DEFAULT_NUMBER_OBJ)
+        self.second.red_show.configure(state=tk.NORMAL)
+        self.second.red_show.delete("1.0", tk.END)
+        self.second.red_show.insert(tk.END, "0")
+        self.second.red_show.tag_add("center", "1.0", "end")
+        self.second.red_show.configure(state=tk.DISABLED)
+        
+        self.second.integer_var.trace_remove("write", self.trace_id)
+        self.second.integer_var.set("")
+        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_green)
+        self.fourth.insert_textbox(f"Reset green object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
+    def check_storage_limit_green(self):
+        try:
+            # get the input value
+            limit = int(self.second.integer_var2.get())
+        except ValueError:
+            limit = DEFAULT_NUMBER_OBJ
+        storage_green = self.connect_plc.read(31)
+        if storage_green == 1:
+            self.fourth.insert_textbox("The storage for green is full")
+        else:
+            if limit > DEFAULT_NUMBER_OBJ:
+                self.fourth.insert_textbox(f"You have entered {limit} for green storage, so {limit} objects will be in process of classification")
+        self.root.after(1000, self.check_storage_limit_green)
+
+
     def on_enter_blue(self, *arg):
         value3 = self.second.integer_var3.get()
         if not value3.isdigit():
             self.second.integer_var3.set(''.join(filter(str.isdigit, value3)))
+    def validate_integer_blue(self, *args):
+        value = self.second.integer_var3.get()
+        if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
+            self.fourth.insert_textbox(f"You have entered {value} so {value} blue objects will be in process")
+            self.connect_plc.write(19, int(value))
+        elif value.isdigit() and int(value) <= DEFAULT_NUMBER_OBJ:
+            self.fourth.insert_textbox(f"By default, {DEFAULT_NUMBER_OBJ} objects will be in the process of classification")
+            self.connect_plc.write(19, DEFAULT_NUMBER_OBJ)
+        else:
+            self.fourth.insert_textbox("Invalid Input, only integers are allowed")
+    def reset3(self):
+        self.connect_plc.write(23, 1)
+        self.root.after(400, lambda: self.connect_plc.write(23, 0))
+        self.connect_plc.write(19, DEFAULT_NUMBER_OBJ)
+        self.second.red_show.configure(state=tk.NORMAL)
+        self.second.red_show.delete("1.0", tk.END)
+        self.second.red_show.insert(tk.END, "0")
+        self.second.red_show.tag_add("center", "1.0", "end")
+        self.second.red_show.configure(state=tk.DISABLED)
+        
+        self.second.integer_var.trace_remove("write", self.trace_id)
+        self.second.integer_var.set("")
+        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_blue)
+        self.fourth.insert_textbox(f"Reset blue object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
+    def check_storage_limit_blue(self):
+        try:
+            # get the input value
+            limit = int(self.second.integer_var3.get())
+        except ValueError:
+            limit = DEFAULT_NUMBER_OBJ
+        storage_blue = self.connect_plc.read(32)
+        if storage_blue == 1:
+            self.fourth.insert_textbox("The storage for blue is full")
+        else:
+            if limit > DEFAULT_NUMBER_OBJ:
+                self.fourth.insert_textbox(f"You have entered {limit} for blue storage, so {limit} objects will be in process of classification")
+        self.root.after(1000, self.check_storage_limit_blue)
+
+
     def on_enter_NG(self):
         value4 = self.second.integer_var4.get()
         if not value4.isdigit():
             self.second.integer_var4.set(''.join(filter(str.isdigit, value4)))
+    def validate_integer_NG(self, *args):
+        value = self.second.integer_var4.get()
+        if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
+            self.fourth.insert_textbox(f"You have entered {value} so {value} NG objects will be in process")
+            self.connect_plc.write(20, int(value))
+        elif value.isdigit() and int(value) <= DEFAULT_NUMBER_OBJ:
+            self.fourth.insert_textbox(f"By default, {DEFAULT_NUMBER_OBJ} objects will be in the process of classification")
+            self.connect_plc.write(20, DEFAULT_NUMBER_OBJ)
+        else:
+            self.fourth.insert_textbox("Invalid Input, only integers are allowed")
+    def reset4(self):
+        self.connect_plc.write(24, 1)
+        self.root.after(400, lambda: self.connect_plc.write(24, 0))
+        self.connect_plc.write(20, DEFAULT_NUMBER_OBJ)
+        self.second.red_show.configure(state=tk.NORMAL)
+        self.second.red_show.delete("1.0", tk.END)
+        self.second.red_show.insert(tk.END, "0")
+        self.second.red_show.tag_add("center", "1.0", "end")
+        self.second.red_show.configure(state=tk.DISABLED)
+        self.second.integer_var.trace_remove("write", self.trace_id)
+        self.second.integer_var.set("")
+        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_NG)
+        self.fourth.insert_textbox(f"Reset NG object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
+    def check_storage_limit_NG(self):
+        try:
+            # get the input value
+            limit = int(self.second.integer_var4.get())
+        except ValueError:
+            limit = DEFAULT_NUMBER_OBJ
+        storage_NG = self.connect_plc.read(33)
+        if storage_NG == 1:
+            self.fourth.insert_textbox("The storage for NG is full")
+        else:
+            if limit > DEFAULT_NUMBER_OBJ:
+                self.fourth.insert_textbox(f"You have entered {limit} for NG storage, so {limit} objects will be in process of classification")
+        self.root.after(1000, self.check_storage_limit_NG)
+
+
     def exit_fullscreen(self, event):
         self.connect_plc.write(16, 0)
         self.capture.release()
