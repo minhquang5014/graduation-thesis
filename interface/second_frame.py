@@ -152,6 +152,7 @@ class SecondFrame():
                                                 font = ctk.CTkFont(size=10, weight="bold")
                                                 )
         self.lights_frame.update()
+
     def lights_indicate_product_quality(self):
         self.product_quality_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color,
                                                   corner_radius=10, 
@@ -160,8 +161,8 @@ class SecondFrame():
         self.product_quality_frame.place(relx = 0, 
                                         rely = self.button_frame_height / self.video_frame_height + 3/10,
                                         relwidth = self.button_frame_width / self.second_frame_width,
-                                        relheight = 2/5)
-        self.product_quality_frame_height = 2/5 * self.video_frame_height
+                                        relheight = 1/2)
+        self.product_quality_frame_height = 1/2 * self.video_frame_height
         self.entry_text = ctk.CTkLabel(self.product_quality_frame, 
                                        text = "NHẬP", 
                                        text_color = "green", 
@@ -169,7 +170,7 @@ class SecondFrame():
         self.entry_text.place(relx = 1/4,
                               rely = 0,
                               relwidth = 1/4,
-                              relheight = 1/4)
+                              relheight = 1/5)
         self.counter_text = ctk.CTkLabel(self.product_quality_frame, 
                                        text = "ĐẾM", 
                                        text_color = "green", 
@@ -177,7 +178,7 @@ class SecondFrame():
         self.counter_text.place(relx = 2/4, 
                                 rely = 0, 
                                 relwidth = 1/4,
-                                relheight = 1/4)
+                                relheight = 1/5)
         self.reset_text = ctk.CTkLabel(self.product_quality_frame, 
                                        text = "RESET", 
                                        text_color = "green", 
@@ -185,82 +186,109 @@ class SecondFrame():
         self.reset_text.place(relx = 3/4,
                               rely = 0,
                               relwidth = 1/4,
-                              relheight = 1/4)
+                              relheight = 1/5)
+        self.blue_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "Xanh dương", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.red_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "Hàng đỏ", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
+        self.green_text = ctk.CTkLabel(self.product_quality_frame, 
+                                       text = "Xanh lá", 
+                                       text_color = "green", 
+                                       font = ("Arial", 18))
         self.NG_text = ctk.CTkLabel(self.product_quality_frame, 
-                                       text = "Hàng NG", 
+                                       text = "Hàng lỗi", 
                                        text_color = "green", 
                                        font = ("Arial", 18))
-        self.white_text = ctk.CTkLabel(self.product_quality_frame, 
-                                       text = "Hàng trắng", 
-                                       text_color = "green", 
-                                       font = ("Arial", 18))
-        self.black_text = ctk.CTkLabel(self.product_quality_frame, 
-                                       text = "Hàng đen", 
-                                       text_color = "green", 
-                                       font = ("Arial", 18))
-        self.white_text.place(relx = 0, rely = 1/4, relwidth = 1/4, relheight = 1/4)
-        self.black_text.place(relx = 0, rely = 2/4, relwidth = 1/4, relheight = 1/4)
-        self.NG_text.place(relx = 0, rely = 3/4, relwidth = 1/4, relheight = 1/4)
+        self.red_text.place(relx = 0, rely = 1/5, relwidth = 1/4, relheight = 1/5)
+        self.green_text.place(relx = 0, rely = 2/5, relwidth = 1/4, relheight = 1/5)
+        self.blue_text.place(relx = 0, rely = 3/5, relwidth = 1/4, relheight = 1/5)
+        self.NG_text.place(relx = 0, rely = 4/5, relwidth = 1/4, relheight = 1/5)
+
 
         self.integer_var = tk.StringVar()
-        self.white_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var)
-        self.white_entry.place(relx=1/4,
-                               rely = 1/4, relwidth = 1/4, relheight = 1/4)
+        self.red_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var)
+        self.red_entry.place(relx=1/4,
+                               rely = 1/5, relwidth = 1/4, relheight = 1/5)
 
-        self.white_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
-        self.white_show.place(relx = 2/4,
-                              rely = 1/4,
-                              relwidth = 1/4, relheight = 1/4)
-        self.white_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
-        self.white_show.insert(tk.END, "0")
-        self.white_show.tag_add("center", "1.0", "end")
-        self.white_show.configure(state="disabled")
+        self.red_show = tk.Text(self.product_quality_frame, width = int(1/5 * self.button_frame_width), height = int(1/5 * self.product_quality_frame_height))
+        self.red_show.place(relx = 2/4,
+                              rely = 1/5,
+                              relwidth = 1/4, relheight = 1/5)
+        self.red_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.red_show.insert(tk.END, "0")
+        self.red_show.tag_add("center", "1.0", "end")
+        self.red_show.configure(state="disabled")
 
-        self.reset_white = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset1)
-        self.reset_white.place(relx = 3/4,
-                               rely = 1/4,
+        self.red_reset = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset1)
+        self.red_reset.place(relx = 3/4,
+                               rely = 1/5,
                                relwidth = 1/4, 
-                               relheight = 1/4)
+                               relheight = 1/5)
         
         self.integer_var2 = tk.StringVar()
-        self.black_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var2)
-        self.black_entry.place(relx=1/4,
-                               rely = 2/4, relwidth = 1/4, relheight = 1/4)
+        self.green_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var2)
+        self.green_entry.place(relx=1/4,
+                               rely = 2/5, relwidth = 1/4, relheight = 1/5)
 
-        self.black_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
-        self.black_show.place(relx = 2/4,
-                              rely = 2/4,
-                              relwidth = 1/4, relheight = 1/4)
-        self.black_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
-        self.black_show.insert(tk.END, "0")
-        self.black_show.tag_add("center", "1.0", "end")
-        self.black_show.configure(state="disabled")
+        self.green_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), 
+                                  height = int(1/5 * self.product_quality_frame_height))
+        self.green_show.place(relx = 2/4,
+                              rely = 2/5,
+                              relwidth = 1/4, relheight = 1/5)
+        self.green_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.green_show.insert(tk.END, "0")
+        self.green_show.tag_add("center", "1.0", "end")
+        self.green_show.configure(state="disabled")
 
-        self.reset_black = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset2)
-        self.reset_black.place(relx = 3/4,
-                               rely = 2/4,
+        self.reset_green = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset2)
+        self.reset_green.place(relx = 3/4,
+                               rely = 2/5,
                                relwidth = 1/4, 
-                               relheight = 1/4)
+                               relheight = 1/5)
         
         self.integer_var3 = tk.StringVar()
-        self.ng_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var3)
-        self.ng_entry.place(relx=1/4,
-                               rely = 3/4, relwidth = 1/4, relheight = 1/4)
+        self.blue_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var3)
+        self.blue_entry.place(relx=1/4,
+                               rely = 3/5, relwidth = 1/4, relheight = 1/5)
 
-        self.black_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), height = int(1/4 * self.product_quality_frame_height))
-        self.black_show.place(relx = 2/4,
-                              rely = 3/4,
-                              relwidth = 1/4, relheight = 1/4)
-        self.black_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
-        self.black_show.insert(tk.END, "0")
-        self.black_show.tag_add("center", "1.0", "end")
-        self.black_show.configure(state="disabled")
+        self.blue_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), 
+                                  height = int(1/5 * self.product_quality_frame_height))
+        self.blue_show.place(relx = 2/4,
+                              rely = 3/5,
+                              relwidth = 1/4, relheight = 1/5)
+        self.blue_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.blue_show.insert(tk.END, "0")
+        self.blue_show.tag_add("center", "1.0", "end")
+        self.blue_show.configure(state="disabled")
 
-        self.reset_black = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset3)
-        self.reset_black.place(relx = 3/4,
-                               rely = 3/4,
+        self.blue_reset = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset3)
+        self.blue_reset.place(relx = 3/4,
+                               rely = 3/5,
                                relwidth = 1/4, 
-                               relheight = 1/4)
+                               relheight = 1/5)
+        
+        self.integer_var4 = tk.StringVar()
+        self.NG_entry = tk.Entry(self.product_quality_frame, textvariable=self.integer_var4)
+        self.NG_entry.place(relx = 1/4, 
+                            rely = 4/5, relwidth = 1/4, relheight = 1/5)
+        self.NG_show = tk.Text(self.product_quality_frame, width = int(1/4 * self.button_frame_width), 
+                                  height = int(1/5 * self.product_quality_frame_height))
+        self.NG_show.place(relx = 2/4,
+                              rely = 4/5,
+                              relwidth = 1/4, relheight = 1/5)
+        self.NG_show.tag_configure("center", justify='center', foreground="red", font=("Helvetica", 12, "bold"))
+        self.NG_show.insert(tk.END, "0")
+        self.NG_show.tag_add("center", "1.0", "end")
+        self.NG_show.configure(state="disabled")
+        self.NG_reset = ctk.CTkButton(self.product_quality_frame, text="RESET", fg_color="gray", command=self.reset4)
+        self.NG_reset.place(relx = 3/4,
+                               rely = 4/5,
+                               relwidth = 1/4, 
+                               relheight = 1/5)
 
         # self.trace_id = self.integer_var.trace_add('write', self.validate_integer_red)
         # self.after(1000, self.update_red_show) 
@@ -273,6 +301,9 @@ class SecondFrame():
         pass
         
     def reset3(self):
+        pass
+    
+    def reset4(self):
         pass
 
     def clicked_start(self):

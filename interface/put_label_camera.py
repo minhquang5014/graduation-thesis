@@ -6,8 +6,8 @@ import datetime
 # from model.running_tensorRT import TensorRTDetection
 # tensorRT = TensorRTDetection(video_capture = 0, model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
 
-from model.ObjectDetection import ObjectDetection
-detection = ObjectDetection("model/custom_train_yolov10s_3.pt")
+# from model.ObjectDetection import ObjectDetection
+# detection = ObjectDetection("model/custom_train_yolov10s_3.pt")
 
 def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=False, label_width=None, label_height=None):
     if fixed_video_label:
@@ -25,19 +25,18 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
     ret, frame = capture.read()
     if ret:
         frame = cv2.flip(frame, 1)
-        frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
             # instead of loading .pt model, we'll load the .engine file
             # from model.ObjectDetection import ObjectDetection
-        frame = detection.__call__(frame)
+        # frame, fps = detection.__call__(frame)
             
-        # frame, fps = tensorRT.detection(frame)
-
+        # frame, fps, color_name = tensorRT.detection(frame)
+        frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         current_date = datetime.date.today()
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
         cv2.putText(frame, f"{current_date} {current_time}", 
                     (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-        # cv2.putText(frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+        # cv2.putText(frame, f'FPS: {int(fps)}', (500, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         img = Image.fromarray(frame)
         imgtk = ImageTk.PhotoImage(image=img)
         video_label.imgtk = imgtk
@@ -85,5 +84,4 @@ def update_frame_and_attempt_reconnection(capture_container:list[cv2.VideoCaptur
             capture_container[0] = None
 
         root.after(30, loop)
-
     loop()

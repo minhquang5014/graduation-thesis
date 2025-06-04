@@ -1,53 +1,69 @@
 This is for writing or reading holding register:
 
-0. write black objects
+0. write red objects
 
-1. write white objects
+1. write green objects
 
-2. write NG objects
+2. write blue objects
 
-3. Write start button
+3. write NG objects
 
-4. write stop button
+4. Write start button  - oke
 
-5. read start light
+5. write stop button  - oke
 
-6. read stop light
+6. read start light  - oke
 
-7. write manual/auto mode (0 la auto, 1 la manual)
+7. read stop light  - oke
 
-8. read băng tải
+8. write manual/auto mode (0 la auto, 1 la manual)  - ok
 
-9. read van xoay
+9. read băng tải  - oke
 
-10. read đẩy tay gắp
+10. read van xoay  - oke
 
-11. read van kẹp tay gắp
+11. read đẩy tay gắp -- oke
 
-12. read van đẩy sp black
+12. read van kẹp tay gắp - oke 
 
-13. read van đẩy sp white
+13. read van đẩy sp red
 
-14. read van đẩy sp NG
+14. read van đẩy sp green
 
-15. read manual light
+14. read van đẩy sp blue
 
-<!-- 16. read red light -->
+<!-- 15. read van đẩy sp NG -->
 
-17. Write the number of NG objects
+16. Start program
 
-18. Write the number of black objects
+17. Write the number of red objects
 
-19. Write the number of white objects
+18. Write the number of green objects
 
-20. Reset number of NG objects
+19. Write the number of blue objects
 
-21. Reset number of black objects
+20. Write the number of NG objects
 
-22. Reset number of white objects
+21. Reset number of red objects
 
-23. Read the number of current NG objects
+22. Reset number of green objects
 
-24. Read the number of current black objects            
+23. Reset number of blue objects
 
-25. Read the number of current white objects
+24. Reset number of NG objects
+
+25. Read the number of current red objects
+
+26. Read the number of current green objects            
+
+27. Read the number of current blue objects
+
+28. Read the number of current NG objects
+
+30. Check if red storage is full
+
+31. Check if green storage is full
+
+32. Check if blue storage is full
+
+33. Check if Ng storage is full
