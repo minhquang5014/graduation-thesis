@@ -19,6 +19,8 @@ class MainWindow(create_window.CreateWindow):
         self.connect_plc = PLCConnection(host = '192.168.0.1')
         self.connect_status = self.connect_plc.connectPLC()
         print(self.connect_status)
+
+        # first frame to put the label video
         self.video_label, self.label_width, self.label_height = put_label_camera.label_to_put_video(
                 self.root,
                 screen_width=self.screen_width,
