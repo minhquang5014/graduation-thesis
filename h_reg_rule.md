@@ -59,3 +59,11 @@ This is for writing or reading holding register:
 27. Read the number of current blue objects
 
 28. Read the number of current NG objects
+
+30. Check if red storage is full
+
+31. Check if green storage is full
+
+32. Check if blue storage is full
+
+33. Check if Ng storage is full

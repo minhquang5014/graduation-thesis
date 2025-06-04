@@ -11,6 +11,14 @@ color_dir = {
     "Sour green cherry": "#c8ffb5"
 }
 
+
+# return a string, match the string with the number of holding register in the dictionary
+# sending_to_plc = {
+#     "red": 0.
+#     ""
+# }
+
+
 class MainWindow(create_window.BiggerWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -81,7 +89,7 @@ class MainWindow(create_window.BiggerWindow):
         if not self.capture.isOpened() or not ret or frame is None:
             self.fourth.insert_textbox(message="Unable to access camera. Please check your camera")
         else:
-            put_label_camera.update_frame(
+            color_name = put_label_camera.update_frame(
                 self.capture,
                 self.video_label,
                 self.root,

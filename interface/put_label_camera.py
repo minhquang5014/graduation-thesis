@@ -3,8 +3,8 @@ import cv2
 from PIL import Image, ImageTk
 from time import time
 import datetime
-# from model.running_tensorRT import TensorRTDetection
-# tensorRT = TensorRTDetection(video_capture = 0, model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
+from model.running_tensorRT import TensorRTDetection
+tensorRT = TensorRTDetection(video_capture = 0, model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
 
 # from model.ObjectDetection import ObjectDetection
 # detection = ObjectDetection("model/custom_train_yolov10s_3.pt")
@@ -29,7 +29,7 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
             # from model.ObjectDetection import ObjectDetection
         # frame, fps = detection.__call__(frame)
             
-        # frame, fps = tensorRT.detection(frame)
+        frame, fps, color_name = tensorRT.detection(frame)
         frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         current_date = datetime.date.today()
@@ -44,6 +44,7 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
     
     # Repeat after 10 ms
     root.after(10, lambda: update_frame(capture, video_label, root, int(resized_width), int(resized_height)))
+    return color_name
 
 def update_frame_and_attempt_reconnection(capture_container:list[cv2.VideoCapture], video_label:label_to_put_video, root:tk.Tk, resized_width, resized_height):
     def loop():
