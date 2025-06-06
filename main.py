@@ -6,6 +6,7 @@ from PLC.plc_connection import PLCConnection
 from threading import Thread
 import tkinter as tk
 import customtkinter as ctk
+import numpy as np
 
 color_dir = {
     "Peace puff": "#ffd7b5",
@@ -14,17 +15,23 @@ color_dir = {
 
 DEFAULT_NUMBER_OBJ = 10
 
-class MainWindow(create_window.CreateWindow):
+class MainWindow(create_window.BiggerWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.test_value = 1
         self.fg_color = fg_color
         self.capture_index = capture_index
+
+        self.lower_red = np.array([0, 100, 100])
+        self.upper_red = np.array([12, 255, 255])
+        self.lower_green = np.array([30, 100, 100])
+        self.upper_green = np.array([92, 255, 255])
+        self.lower_blue = np.array([95, 120, 120])
+        self.upper_blue = np.array([130, 255, 255])
+
         self.connect_plc = PLCConnection(host = '192.168.0.1')
         self.connect_status = self.connect_plc.connectPLC()
         self.connect_plc.write(16, 1)
-        
-        print(self.connect_status)
 
         # first frame to put the label video
         self.video_label, self.label_width, self.label_height = put_label_camera.label_to_put_video(
@@ -48,6 +55,11 @@ class MainWindow(create_window.CreateWindow):
         self.second.blue_entry.bind('<Return>', self.on_enter_blue)
         self.second.NG_entry.bind('<Return>', self.on_enter_NG)
 
+        self.trace_id = self.second.integer_var.trace_add('write', self.validate_integer_red)
+        self.trace_id2 = self.second.integer_var2.trace_add('write', self.validate_integer_green)
+        self.trace_id3 = self.second.integer_var3.trace_add('write', self.validate_integer_blue)
+        self.trace_id4 = self.second.integer_var4.trace_add('write', self.validate_integer_NG)
+
         self.second.start_button.configure(command=self.custom_start)
         self.second.stop_button.configure(command=self.custom_stop)
 
@@ -56,6 +68,8 @@ class MainWindow(create_window.CreateWindow):
         self.second.reset_green.configure(command=self.reset2)
         self.second.blue_reset.configure(command=self.reset3)
         self.second.NG_reset.configure(command=self.reset4)
+
+
         self.root.after(1000, self.check_storage_limit_red)
         self.root.after(1000, self.check_storage_limit_green)
         self.root.after(1000, self.check_storage_limit_blue)
@@ -94,15 +108,16 @@ class MainWindow(create_window.CreateWindow):
         if not self.capture.isOpened() or not ret or frame is None:
             self.fourth.insert_textbox(message="Unable to access camera. Please check your camera")
         else:
-            color_name = put_label_camera.update_frame(
+            put_label_camera.update_frame(
                 self.capture,
                 self.video_label,
                 self.root,
                 resized_width=self.label_width,
                 resized_height=self.label_height,
+                write=self.connect_plc.write,
                 enable_detection=True
             )
-        
+
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
         # Thread(target = self.custom_start, daemon=True).start()
         # Thread(target = self.custom_stop, daemon=True).start()
@@ -239,15 +254,15 @@ class MainWindow(create_window.CreateWindow):
         self.connect_plc.write(22, 1)
         self.root.after(400, lambda: self.connect_plc.write(22, 0))
         self.connect_plc.write(18, DEFAULT_NUMBER_OBJ)
-        self.second.red_show.configure(state=tk.NORMAL)
-        self.second.red_show.delete("1.0", tk.END)
-        self.second.red_show.insert(tk.END, "0")
-        self.second.red_show.tag_add("center", "1.0", "end")
-        self.second.red_show.configure(state=tk.DISABLED)
+        self.second.green_show.configure(state=tk.NORMAL)
+        self.second.green_show.delete("1.0", tk.END)
+        self.second.green_show.insert(tk.END, "0")
+        self.second.green_show.tag_add("center", "1.0", "end")
+        self.second.green_show.configure(state=tk.DISABLED)
         
-        self.second.integer_var.trace_remove("write", self.trace_id)
-        self.second.integer_var.set("")
-        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_green)
+        self.second.integer_var2.trace_remove("write", self.trace_id2)
+        self.second.integer_var2.set("")
+        self.trace_id2 = self.second.integer_var2.trace_add("write", self.validate_integer_green)
         self.fourth.insert_textbox(f"Reset green object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
     def check_storage_limit_green(self):
         try:
@@ -282,15 +297,15 @@ class MainWindow(create_window.CreateWindow):
         self.connect_plc.write(23, 1)
         self.root.after(400, lambda: self.connect_plc.write(23, 0))
         self.connect_plc.write(19, DEFAULT_NUMBER_OBJ)
-        self.second.red_show.configure(state=tk.NORMAL)
-        self.second.red_show.delete("1.0", tk.END)
-        self.second.red_show.insert(tk.END, "0")
-        self.second.red_show.tag_add("center", "1.0", "end")
-        self.second.red_show.configure(state=tk.DISABLED)
+        self.second.blue_show.configure(state=tk.NORMAL)
+        self.second.blue_show.delete("1.0", tk.END)
+        self.second.blue_show.insert(tk.END, "0")
+        self.second.blue_show.tag_add("center", "1.0", "end")
+        self.second.blue_show.configure(state=tk.DISABLED)
         
-        self.second.integer_var.trace_remove("write", self.trace_id)
-        self.second.integer_var.set("")
-        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_blue)
+        self.second.integer_var3.trace_remove("write", self.trace_id3)
+        self.second.integer_var3.set("")
+        self.trace_id3 = self.second.integer_var3.trace_add("write", self.validate_integer_blue)
         self.fourth.insert_textbox(f"Reset blue object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
     def check_storage_limit_blue(self):
         try:
@@ -325,14 +340,14 @@ class MainWindow(create_window.CreateWindow):
         self.connect_plc.write(24, 1)
         self.root.after(400, lambda: self.connect_plc.write(24, 0))
         self.connect_plc.write(20, DEFAULT_NUMBER_OBJ)
-        self.second.red_show.configure(state=tk.NORMAL)
-        self.second.red_show.delete("1.0", tk.END)
-        self.second.red_show.insert(tk.END, "0")
-        self.second.red_show.tag_add("center", "1.0", "end")
-        self.second.red_show.configure(state=tk.DISABLED)
-        self.second.integer_var.trace_remove("write", self.trace_id)
-        self.second.integer_var.set("")
-        self.trace_id = self.second.integer_var.trace_add("write", self.validate_integer_NG)
+        self.second.NG_show.configure(state=tk.NORMAL)
+        self.second.NG_show.delete("1.0", tk.END)
+        self.second.NG_show.insert(tk.END, "0")
+        self.second.NG_show.tag_add("center", "1.0", "end")
+        self.second.NG_show.configure(state=tk.DISABLED)
+        self.second.integer_var4.trace_remove("write", self.trace_id4)
+        self.second.integer_var4.set("")
+        self.trace_id4 = self.second.integer_var4.trace_add("write", self.validate_integer_NG)
         self.fourth.insert_textbox(f"Reset NG object counter, will start counting again. By default, {DEFAULT_NUMBER_OBJ} objects will be in process")
     def check_storage_limit_NG(self):
         try:

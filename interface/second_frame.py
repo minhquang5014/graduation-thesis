@@ -290,7 +290,6 @@ class SecondFrame():
                                relwidth = 1/4, 
                                relheight = 1/5)
 
-        # self.trace_id = self.integer_var.trace_add('write', self.validate_integer_red)
         # self.after(1000, self.update_red_show) 
         # self.after(1000, self.check_storage_limit_red)
 
