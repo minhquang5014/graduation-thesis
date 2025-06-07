@@ -1,14 +1,12 @@
 This file will write down all the TO-DO work that must be done in 2 weeks: 
 
-1. The interface is almost done. But add in the command in the main.py file. The read_holding_reg doesn't seem to work
+1. The interface is almost done. 
 
-2. Add a small window for auto / manual
+2. Problem with holding register 17, 18, 19, 20
 
-3. light configuration doesn't work - it must read the state from the PLC
+3. Problem with the sending signal to PLC holding reg 0, 1, 2, 3, it should update periodically, but it's not
 
-4. in the number of product count, modify the black and white with red, green, and add the color blue
-
-5. Capture the image of the products
+4. Capture the image of the products
 
 
 Check list:

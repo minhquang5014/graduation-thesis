@@ -50,6 +50,12 @@ class MainWindow(create_window.BiggerWindow):
             fixed_button_size = False,
             fg_color = self.fg_color
         )
+
+        self.connect_plc.write(17, DEFAULT_NUMBER_OBJ)
+        self.connect_plc.write(18, DEFAULT_NUMBER_OBJ)
+        self.connect_plc.write(19, DEFAULT_NUMBER_OBJ)
+        self.connect_plc.write(20, DEFAULT_NUMBER_OBJ)
+
         self.second.red_entry.bind('<Return>', self.on_enter_red)
         self.second.green_entry.bind('<Return>', self.on_enter_green)
         self.second.blue_entry.bind('<Return>', self.on_enter_blue)
@@ -69,12 +75,10 @@ class MainWindow(create_window.BiggerWindow):
         self.second.blue_reset.configure(command=self.reset3)
         self.second.NG_reset.configure(command=self.reset4)
 
-
         self.root.after(1000, self.check_storage_limit_red)
         self.root.after(1000, self.check_storage_limit_green)
         self.root.after(1000, self.check_storage_limit_blue)
         self.root.after(1000, self.check_storage_limit_NG)
-
         self.root.after(400, self.read_start_stop_lights)
 
         self.third = third_frame.ThirdFrame(

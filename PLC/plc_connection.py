@@ -1,6 +1,6 @@
 from pymodbus.client.tcp import ModbusTcpClient as mbc
 from pymodbus.exceptions import ConnectionException
-from  threading import Thread
+# from  threading import Thread
 class PLCConnection:
     def __init__(self, host='192.168.0.1', port=502):
         self.host = host
@@ -30,7 +30,7 @@ class PLCConnection:
             # Không sử dụng 'unit' trong pymodbus 3.x
             try:
                 result = self.client.read_holding_registers(address=address, count=count)
-                Thread(target = self.read(address), daemon=True).start()
+                # Thread(target = self.read(address), daemon=True).start()
                 return result.registers[0] if not result.isError() else None
             except Exception as e:
                 print("Not connected to PLC. Cannot read")
