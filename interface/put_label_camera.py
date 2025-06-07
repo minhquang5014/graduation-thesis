@@ -6,7 +6,7 @@ import datetime
 import numpy as np
 
 from model.running_tensorRT import TensorRTDetection
-tensorRT = TensorRTDetection(video_capture = 0, model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
+tensorRT = TensorRTDetection(video_capture = 2, model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
 
 # from model.ObjectDetection import ObjectDetection
 # detection = ObjectDetection("model/custom_train_yolov10s_3.pt")
@@ -59,8 +59,8 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
                 # Find contours and annotate
                 for mask, color_name, color_bgr, address in [
                     (masked_red, "red", (0, 0, 255), 0),
-                    (masked_blue, "blue", (255, 0, 0), 1),
-                    (masked_green, "green", (0, 255, 0), 2)
+                    (masked_green, "green", (0, 255, 0), 1)
+                    (masked_blue, "blue", (255, 0, 0), 2),
                 ]:
                     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                     for contour in contours:
@@ -69,7 +69,7 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
                             cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)
                             cv2.putText(frame, color_name, (x + x1, y + y1 - 10),
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_bgr, 2)
-                            write(address, 1) if write is not None else print(f"Cannot send signal to {address}")
+                            # write(address, 1) if write is not None else print(f"Cannot send signal to {address}")
                             register_state[address] = 0
         if time() - last_update_time >= update_interval:
             for i in range(4):

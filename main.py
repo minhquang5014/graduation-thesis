@@ -7,7 +7,7 @@ from threading import Thread
 import tkinter as tk
 import customtkinter as ctk
 import numpy as np
-
+from time import time
 color_dir = {
     "Peace puff": "#ffd7b5",
     "Sour green cherry": "#c8ffb5"
@@ -21,6 +21,9 @@ class MainWindow(create_window.BiggerWindow):
         self.test_value = 1
         self.fg_color = fg_color
         self.capture_index = capture_index
+        
+        self.last_update_time = time()
+        self.update_interval = 0.4
 
         self.lower_red = np.array([0, 100, 100])
         self.upper_red = np.array([12, 255, 255])
@@ -118,6 +121,8 @@ class MainWindow(create_window.BiggerWindow):
                 self.root,
                 resized_width=self.label_width,
                 resized_height=self.label_height,
+                last_update_time=self.last_update_time,
+                update_interval=self.update_interval,
                 write=self.connect_plc.write,
                 enable_detection=True
             )
@@ -376,5 +381,5 @@ class MainWindow(create_window.BiggerWindow):
 
 if __name__ == "__main__":
     # MainWindow(capture_index = "video/video_07332025_11h33m31s.avi")
-    MainWindow(capture_index = 0)
+    MainWindow(capture_index = 2)
     
