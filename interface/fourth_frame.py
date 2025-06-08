@@ -58,7 +58,7 @@ class FourthFrame():
                                        rely = 0,
                                        relwidth = 2/5, 
                                        relheight = 3/5)
-        self.auto_canvas_light.create_oval(0, 0,
+        self.auto = self.auto_canvas_light.create_oval(0, 0,
                                             2/5 * self.auto_manual_frame_height,
                                             3/5 * (self.auto_manual_frame_height - self.switch.winfo_reqwidth()),
                                             fill="gray", 
@@ -75,7 +75,7 @@ class FourthFrame():
                                      relwidth = 2/5,
                                      relheight =3/5
                                     )
-        self.manual_canvas_light.create_oval(0, 0,
+        self.manual = self.manual_canvas_light.create_oval(0, 0,
                                             2/5 * self.auto_manual_frame_height,
                                             3/5 * (self.auto_manual_frame_height - self.switch.winfo_reqwidth()),
                                             fill="gray", 

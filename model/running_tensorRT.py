@@ -47,13 +47,11 @@ class TensorRTDetection:
         return cls, conf, box
 
     def detection(self, frame):
-        start_time = time.time()
         cls, conf, box = self.get_detection_result(frame)
 
         class_ids = []
         confidence = []
         xyxys = []
-        boxes_out = []
 
         for class_id, conf_score, xyxy in zip(cls, conf, box):
             if conf_score < CONF_THRESHOLD:
@@ -65,7 +63,7 @@ class TensorRTDetection:
         detection_output = list(zip(class_ids, confidence, xyxys))
         frame = utils.draw_box(frame, detection_output, self.label_map, self.color)
 
-        return frame, start_time, xyxys, class_ids
+        return frame, xyxys, class_ids
 
     def detection_webcam(self):
         cap = cv2.VideoCapture(self.video_capture)

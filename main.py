@@ -103,6 +103,9 @@ class MainWindow(create_window.BiggerWindow):
             video_frame_height=self.label_height, 
             fg_color = self.fg_color
         )
+
+        self.light1_on, self.light2_on, self.light3_on, self.light4_on, self.light5_on, self.light6_on, self.light7_on = False, False, False, False, False, False, False
+
         if self.connect_status is False:
             self.fourth.insert_textbox(message="Failed to connect to PLC, please check connection")
         else:
@@ -124,7 +127,7 @@ class MainWindow(create_window.BiggerWindow):
                 last_update_time=self.last_update_time,
                 update_interval=self.update_interval,
                 write=self.connect_plc.write,
-                enable_detection=True
+                enable_detection=False
             )
 
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
@@ -196,12 +199,127 @@ class MainWindow(create_window.BiggerWindow):
     def custom_auto_manual_switch(self):
         if self.auto_manual_switch.get() == 1:
             self.connect_plc.write(8, 1)
+            self.open_small_window()
+            self.fourth.auto_canvas_light.itemconfig(self.fourth.auto, fill = "gray")
+            self.fourth.manual_canvas_light.itemconfig(self.fourth.manual, fill = "green")
             self.fourth.insert_textbox(message="Switching to manual mode now")
         else:
             self.connect_plc.write(8, 0)
+            self.close_small_window()
+            self.fourth.manual_canvas_light.itemconfig(self.fourth.manual, fill = "gray")
+            self.fourth.auto_canvas_light.itemconfig(self.fourth.auto, fill = "green")
             self.fourth.insert_textbox(message="Switching back to auto mode")
-    
-    
+    def open_small_window(self):
+        self.small_window = ctk.CTkToplevel()
+        self.small_window.geometry("800x500")
+        self.small_window.title("WINDOW FOR MANUAL CONTROL")
+        self.small_window.protocol("WM_DELETE_WINDOW", self.on_closing_small_window)
+        self.small_window.attributes("-topmost", True)
+        self.frame_inside_small_window = ctk.CTkFrame(self.small_window)
+        self.frame_inside_small_window.pack(expand=True, fill="both")
+        self.frame_inside_small_window.grid_rowconfigure(0, weight=1, uniform="a")
+        self.frame_inside_small_window.grid_rowconfigure((1, 2), weight=2, uniform="a")
+        self.frame_inside_small_window.grid_columnconfigure((0, 1, 2), weight=1, uniform="a")
+        self.title_small_window = ctk.CTkLabel(self.frame_inside_small_window, text="MANUAL CONTROL PANEL", bg_color= "orange", 
+                                                         font=ctk.CTkFont(size=20, weight="bold"))
+        self.title_small_window.grid(row=0, column=0, columnspan=3)
+        self.button1 = ctk.CTkButton(self.frame_inside_small_window,
+            text="BĂNG TẢI", 
+            corner_radius = 50,  
+            command=self.clicked_1)
+        self.button1.grid(row =1, column=0)
+        self.button2 = ctk.CTkButton(self.frame_inside_small_window,
+            text="VAN XOAY", 
+            corner_radius = 50, 
+            command=self.clicked_2)
+        self.button2.grid(row =1, column=1)
+        self.button3 = ctk.CTkButton(self.frame_inside_small_window,
+            text="VAN ĐẨY", 
+            corner_radius = 50, 
+            command=self.clicked_3)
+        self.button3.grid(row =1, column=2)
+        self.button4 = ctk.CTkButton(self.frame_inside_small_window,
+            text="VAN KẸP", 
+            corner_radius = 50,  
+            command=self.clicked_4)
+        self.button4.grid(row =2, column=0)
+        self.button5 = ctk.CTkButton(self.frame_inside_small_window,
+            text="VAN ĐẨY SP ĐỎ", 
+            corner_radius = 50, 
+            command=self.clicked_5)
+        self.button5.grid(row =2, column=1)
+        self.button6 = ctk.CTkButton(self.frame_inside_small_window,
+            text="VAN ĐẨY SP XANH LÁ", 
+            corner_radius = 50,  
+            command=self.clicked_6)
+        self.button6.grid(row =2, column=2)
+        self.button7 = ctk.CTkButton(self.frame_inside_small_window,
+            text = "VAN ĐẨY SP XANH DƯƠNG",
+            corner_radius = 50, 
+            command=self.clicked_7)
+    def clicked_1(self):
+        self.light1_on = not self.light1_on
+        if self.light1_on:
+            self.fourth.insert_textbox("manual - băng tải - ON")
+            self.connect_plc.write(38, 1)
+        else:
+            self.fourth.insert_textbox("manual - băng tải - OFF")
+            self.connect_plc.write(38, 0)
+    def clicked_2(self):
+        self.light2_on = not self.light2_on
+        if self.light2_on:
+            self.fourth.insert_textbox("manual - Van xoay - ON")
+            self.connect_plc.write(39, 1)
+        else:
+            self.fourth.insert_textbox("manual - Van xoay - OFF")
+            self.connect_plc.write(39, 0)
+    def clicked_3(self):
+        self.light3_on = not self.light3_on
+        if self.light3_on:
+            self.fourth.insert_textbox("manual - Van day canh tay - ON")
+            self.connect_plc.write(40, 1)
+        else:
+            self.fourth.insert_textbox("manual - Van day canh tay - OFF")
+            self.connect_plc.write(40, 0)
+    def clicked_4(self):
+        self.light4_on = not self.light4_on
+        if self.light4_on:
+            self.fourth.insert_textbox("manual - Van kep - ON")
+            self.connect_plc.write(41, 1)
+        else:
+            self.fourth.insert_textbox("manual - Van kep - OFF")
+            self.connect_plc.write(41, 0)
+    def clicked_5(self):
+        self.light5_on = not self.light5_on
+        if self.light5_on:
+            self.fourth.insert_textbox("manual - Van day SP do - ON")
+            self.connect_plc.write(42, 1)
+        else:
+            self.fourth.insert_textbox("manual - Van day SP do - OFF")
+            self.connect_plc.write(42, 0)
+    def clicked_6(self):
+        self.light6_on = not self.light6_on
+        if self.light6_on:
+            self.fourth.insert_textbox("manual - Van day SP xanh la cay - ON")
+            self.connect_plc.write(43, 1)
+        else:
+            self.fourth.insert_textbox("manual - Van day SP xanh la cay - OFF")
+            self.connect_plc.write(43, 0)
+    def clicked_7(self):
+        self.light7_on = not self.light7_on
+        if self.light7_on:
+            self.fourth.insert_textbox("manual - Van day SP xanh duong - ON")
+            self.connect_plc.write(44, 1)
+        else:
+            self.fourth.insert_textbox("manual - Van day SP xanh duong - OFF")
+            self.connect_plc.write(44, 0)
+
+    def close_small_window(self):
+        pass
+    def on_closing_small_window(self):
+        pass
+
+
     # check if the input value is a integer
     def on_enter_red(self, *arg):
         value1 = self.second.integer_var.get()

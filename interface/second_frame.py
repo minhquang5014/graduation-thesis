@@ -24,6 +24,7 @@ class SecondFrame():
         self.start_stop_lights()
         self.lights_indicate_product_quality()
         # self.putting_logo()
+        # self.frame_to_show_detected_object()
         self.second_frame.update()
 
     def putting_buttons(self):
@@ -293,6 +294,38 @@ class SecondFrame():
         # self.after(1000, self.update_red_show) 
         # self.after(1000, self.check_storage_limit_red)
 
+    def frame_to_show_detected_object(self):
+        self.detected_object_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color, 
+                                                  border_width = 2,
+                                                  border_color = "black", corner_radius = 10)
+        self.detected_object_frame.place(relx= (8/12 * self.second_frame_width) / self.second_frame_width,
+                        rely = 5/9,
+                        relwidth = (4/12 * self.second_frame_width) / self.second_frame_width,
+                        relheight = 4/9
+                        )
+        self.detected_object_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6), uniform="a")
+        self.detection_type = ctk.CTkLabel(self.detected_object_frame, 
+                                       text = "No object detected", 
+                                       text_color = "green", 
+                                       font = ("Arial", 21),
+                                       wraplength=4/12 * self.second_frame_width, 
+                                       justify = "left")
+        self.detection_type.grid(column = 0, row = 2, padx = 10, sticky = "nsew")
+        self.saved_dir = ctk.CTkLabel(self.detected_object_frame, 
+                                       text = "Saved image directory: None", 
+                                       text_color = "green", 
+                                       font = ("Arial", 21),
+                                       wraplength=4/12 * self.second_frame_width - 20, 
+                                       justify = "left")
+        self.saved_dir.grid(column = 0, row = 3, rowspan = 3, sticky = "nsew", padx = 10)
+        self.test = ctk.CTkLabel(self.detected_object_frame, 
+                                       text = "Test", 
+                                       text_color = "green", 
+                                       font = ("Arial", 21),
+                                       wraplength=4/12 * self.second_frame_width, 
+                                       justify = "left")
+        self.test.grid(column = 0, row = 6,padx = 10, sticky = "nsew")
+        
     def reset1(self):
         pass
 

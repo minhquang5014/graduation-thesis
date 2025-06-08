@@ -23,7 +23,7 @@ def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=Fal
     return video_label, label_width, label_height
 
 def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video, 
-                 root:tk.Tk, resized_width, resized_height, last_update_time, update_interval, write=None, enable_detection = False):
+                 root:tk.Tk, resized_width, resized_height, last_update_time, update_interval, write=None, read = None,enable_detection = False):
     lower_red = np.array([0, 100, 100])
     upper_red = np.array([12, 255, 255])
     lower_green = np.array([30, 100, 100])
@@ -32,50 +32,60 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
     upper_blue = np.array([130, 255, 255])
     ret, frame = capture.read()
     fps = 0
+    start_time = time()
     if ret:
         frame = cv2.flip(frame, 1)
             # instead of loading .pt model, we'll load the .engine file
             # from model.ObjectDetection import ObjectDetection
         # frame, fps = detection.__call__(frame)
         register_state = [0, 0, 0, 0]
-        frame, start_time, xyxys, class_ids = tensorRT.detection(frame)
+        if enable_detection == True:
+            frame, xyxys, class_ids = tensorRT.detection(frame)
 
-        for bbox, class_id in zip(xyxys, class_ids):
-            x1, y1, x2, y2 = bbox.astype(int)
-            if class_id == 0:
-                # write holding register to address number 3, value 1
-                # write(3, 1) if write is not None else print("Cannot send signal to address 3, value 1")
-                register_state[3] = 1
-            elif class_id == 2:
-                w1, h1 = x2 - x1, y2 - y1
-                ROI = frame[y1:y2, x1:x2]
-                hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
+            for bbox, class_id in zip(xyxys, class_ids):
+                x1, y1, x2, y2 = bbox.astype(int)
+                if class_id == 0:
+                    # write holding register to address number 3, value 1
+                    # write(3, 1) if write is not None else print("Cannot send signal to address 3, value 1")
+                    register_state[3] = 1
+                elif class_id == 2:
+                    w1, h1 = x2 - x1, y2 - y1
+                    ROI = frame[y1:y2, x1:x2]
+                    hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
 
-                # Apply color masks
-                masked_red = cv2.inRange(hsv_roi, lower_red, upper_red)
-                masked_blue = cv2.inRange(hsv_roi, lower_blue, upper_blue)
-                masked_green = cv2.inRange(hsv_roi, lower_green, upper_green)
+                    # Apply color masks
+                    masked_red = cv2.inRange(hsv_roi, lower_red, upper_red)
+                    masked_blue = cv2.inRange(hsv_roi, lower_blue, upper_blue)
+                    masked_green = cv2.inRange(hsv_roi, lower_green, upper_green)
 
-                # Find contours and annotate
-                for mask, color_name, color_bgr, address in [
-                    (masked_red, "red", (0, 0, 255), 0),
-                    (masked_green, "green", (0, 255, 0), 1)
-                    (masked_blue, "blue", (255, 0, 0), 2),
-                ]:
-                    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                    for contour in contours:
-                        if cv2.contourArea(contour) > 0.25 * w1 * h1:
-                            x, y, w, h = cv2.boundingRect(contour)
-                            cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)
-                            cv2.putText(frame, color_name, (x + x1, y + y1 - 10),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_bgr, 2)
-                            # write(address, 1) if write is not None else print(f"Cannot send signal to {address}")
-                            register_state[address] = 0
-        if time() - last_update_time >= update_interval:
-            for i in range(4):
-                write(i, register_state[i]) if write is not None else print(f"Cannot write to address {register_state[i]}, value {i}")
-            last_update_time = time()
-        end_time = time()
+                    # Find contours and annotate
+                    for mask, color_name, color_bgr, address in [
+                        (masked_red, "red", (0, 0, 255), 0),
+                        (masked_green, "green", (0, 255, 0), 1)
+                        (masked_blue, "blue", (255, 0, 0), 2),
+                    ]:
+                        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                        for contour in contours:
+                            if cv2.contourArea(contour) > 0.25 * w1 * h1:
+                                x, y, w, h = cv2.boundingRect(contour)
+                                cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)
+                                cv2.putText(frame, color_name, (x + x1, y + y1 - 10),
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_bgr, 2)
+                                # write(address, 1) if write is not None else print(f"Cannot send signal to {address}")
+                                register_state[address] = 0
+            if time() - last_update_time >= update_interval:
+                for i in range(4):
+                    write(i, register_state[i]) if write is not None else print(f"Cannot write to address {register_state[i]}, value {i}")
+                last_update_time = time()
+            end_time = time()
+
+        # red_value = read(34)
+        # green_value = read(35)
+        # blue_value = read(36)
+        # NG_value = read(37)
+
+        # process if any value is enabled to 1, take the photo, save it in the working dir, name it with detection type, and 
+
         if (end_time - start_time) > 0:
             fps = 1 / (end_time - start_time)
 
