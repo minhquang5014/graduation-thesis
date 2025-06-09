@@ -8,6 +8,7 @@ import tkinter as tk
 import customtkinter as ctk
 import numpy as np
 from time import time
+from tkinter import messagebox
 color_dir = {
     "Peace puff": "#ffd7b5",
     "Sour green cherry": "#c8ffb5"
@@ -103,7 +104,10 @@ class MainWindow(create_window.BiggerWindow):
             video_frame_height=self.label_height, 
             fg_color = self.fg_color
         )
-
+        self.small_window = None
+        if self.small_window == None:
+            self.fourth.auto_canvas_light.itemconfig(self.fourth.auto, fill="green")
+            self.fourth.manual_canvas_light.itemconfig(self.fourth.manual, fill = "gray")
         self.light1_on, self.light2_on, self.light3_on, self.light4_on, self.light5_on, self.light6_on, self.light7_on = False, False, False, False, False, False, False
 
         if self.connect_status is False:
@@ -315,10 +319,19 @@ class MainWindow(create_window.BiggerWindow):
             self.connect_plc.write(44, 0)
 
     def close_small_window(self):
-        pass
+        if self.small_window:
+            self.small_window.destroy()
+            self.small_window = None
     def on_closing_small_window(self):
-        pass
-
+        response = messagebox.askyesno("Confirm", 
+                                       "If you close, the manual mode will turn off and the auto mode will be on again, are you sure you wanna quit?", 
+                                       parent=self.small_window)
+        if response:
+            self.small_window.destroy()
+            self.fourth.switch.deselect()  # Turn off the switch
+            self.fourth.auto_canvas_light.itemconfig(self.fourth.auto, fill="green")
+            self.fourth.manual_canvas_light.itemconfig(self.fourth.manual, fill="gray")
+            self.connect_plc.write(8, 0)
 
     # check if the input value is a integer
     def on_enter_red(self, *arg):

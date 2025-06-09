@@ -12,7 +12,7 @@ import numpy as np
 # from modules.autobackend import AutoBackend
 import yaml
 
-CONF_THRESHOLD = 0.85
+CONF_THRESHOLD = 0.8
 class TensorRTDetection:
     def __init__ (self, video_capture, model_path:str, yaml_path:str):
         self.lower_red = np.array([0, 100, 100])
@@ -122,8 +122,8 @@ class TensorRTDetection:
             if (end_time - start_time) > 0:
                 fps = 1 / (end_time - start_time)
 
-            image_output = utils.draw_fps(fps, frame)
-            cv2.imshow("YOLOv8 Webcam Detection", image_output)
+            # image_output = utils.draw_fps(fps, frame)
+            cv2.imshow("YOLOv8 Webcam Detection", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
@@ -131,5 +131,5 @@ class TensorRTDetection:
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    tensorRT = TensorRTDetection(video_capture=2, model_path = "model/custom_train_yolov10s_3.engine", yaml_path="model/data.yaml")
+    tensorRT = TensorRTDetection(video_capture=2, model_path = "model/custom_train_yolov10s_4.engine", yaml_path="model/data.yaml")
     tensorRT.detection_webcam()
