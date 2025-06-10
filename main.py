@@ -37,6 +37,9 @@ class MainWindow(create_window.BiggerWindow):
         self.connect_status = self.connect_plc.connectPLC()
         self.connect_plc.write(16, 1)
 
+        for i in range(4):
+            self.connect_plc.write(i, 0)
+
         # first frame to put the label video
         self.video_label, self.label_width, self.label_height = put_label_camera.label_to_put_video(
                 self.root,
@@ -131,7 +134,7 @@ class MainWindow(create_window.BiggerWindow):
                 last_update_time=self.last_update_time,
                 update_interval=self.update_interval,
                 write=self.connect_plc.write,
-                enable_detection=False
+                enable_detection=True
             )
 
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()

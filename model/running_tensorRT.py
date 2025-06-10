@@ -6,21 +6,22 @@ import pathlib
 from ultralytics import YOLO
 try:
     import model.utils as utils
+    # from PLC.plc_connection import PLCConnection
 except ModuleNotFoundError:
     import utils
 import numpy as np
 # from modules.autobackend import AutoBackend
 import yaml
 
-CONF_THRESHOLD = 0.8
+CONF_THRESHOLD = 0.7
 class TensorRTDetection:
     def __init__ (self, video_capture, model_path:str, yaml_path:str):
         self.lower_red = np.array([0, 100, 100])
-        self.upper_red = np.array([12, 255, 255])
-        self.lower_green = np.array([30, 100, 100])
-        self.upper_green = np.array([92, 255, 255])
-        self.lower_blue = np.array([95, 120, 120])
-        self.upper_blue = np.array([130, 255, 255])
+        self.upper_red = np.array([14, 255, 255])
+        self.lower_green = np.array([50, 120, 120])
+        self.upper_green = np.array([85, 255, 255])
+        self.lower_blue = np.array([90, 120, 120])
+        self.upper_blue = np.array([125, 255, 255])
 
         self.video_capture = video_capture
         self.model_path = model_path
@@ -131,5 +132,5 @@ class TensorRTDetection:
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    tensorRT = TensorRTDetection(video_capture=2, model_path = "model/custom_train_yolov10s_4.engine", yaml_path="model/data.yaml")
+    tensorRT = TensorRTDetection(video_capture=0, model_path = "model/custom_train_yolov10s_4.engine", yaml_path="model/data.yaml")
     tensorRT.detection_webcam()
