@@ -125,7 +125,7 @@ class MainWindow(create_window.BiggerWindow):
         if not self.capture.isOpened() or not ret or frame is None:
             self.fourth.insert_textbox(message="Unable to access camera. Please check your camera")
         else:
-            put_label_camera.update_frame(
+            put_label_camera.update_normal_frame(
                 self.capture,
                 self.video_label,
                 self.root,
@@ -176,14 +176,12 @@ class MainWindow(create_window.BiggerWindow):
         self.fourth.insert_textbox(message="Pressing start. The program is now running, sending int to h_reg 3")
         self.connect_plc.write(4, 1)
         self.connect_plc.write(5, 0)
-        self.root.after(400, self.reset_start_stop_button)
-        
+        self.root.after(400, self.reset_start_stop_button)   
     def custom_stop(self):
         self.fourth.insert_textbox(message="Pressing stop. Stops the program now, sending int to h_reg 4")
         self.connect_plc.write(5, 1)
         self.connect_plc.write(4, 0)
         self.root.after(400, self.reset_start_stop_button)
-
     def reset_start_stop_button(self):
         self.connect_plc.write(4, 0)
         self.connect_plc.write(5, 0)
@@ -192,7 +190,6 @@ class MainWindow(create_window.BiggerWindow):
         initial_start_state = self.connect_plc.read(6)
         initial_stop_state = self.connect_plc.read(7)
         self.update_lights(initial_start_state, initial_stop_state)
-
     def update_lights(self, state1, state2):
         if state1 == 1:
             self.second.lights_canvas_start.itemconfig(self.second.oval_start, fill = "green")
@@ -203,6 +200,22 @@ class MainWindow(create_window.BiggerWindow):
         else:
             self.second.lights_canvas_stop.itemconfig(self.second.oval_stop, fill = "gray")
 
+    def read_detected_object(self):
+        red_value = self.connect_plc.read(34)
+        green_value = self.connect_plc.read(35)
+        blue_value = self.connect_plc.read(36)
+        NG_value = self.connect_plc.read(37)
+        if red_value == 1:
+            self.fourth.insert_textbox("Camera has recognized red object")
+        elif green_value == 1:
+            self.fourth.insert_textbox("Camera has recognized green object")
+        elif blue_value == 1:
+            self.fourth.insert_textbox("Camera has recognized blue object")
+        elif NG_value == 1:
+            self.fourth.insert_textbox("Camera has recognized NG object")
+        else:
+            pass
+        self.root.after(400, self.read_detected_object)
     def custom_auto_manual_switch(self):
         if self.auto_manual_switch.get() == 1:
             self.connect_plc.write(8, 1)

@@ -169,3 +169,31 @@ def update_frame(capture:cv2.VideoCapture, video_label:label_to_put_video,
     
     # Repeat after 10 ms
     root.after(10, lambda: update_frame(capture, video_label, root, int(resized_width), int(resized_height), last_update_time, update_interval, write))
+
+def update_normal_frame(capture:cv2.VideoCapture, video_label:label_to_put_video, 
+                 root:tk.Tk, resized_width, resized_height, last_update_time, update_interval, write=None, enable_detection = False):
+    ret, frame = capture.read()
+    fps = 0
+    start_time = time()
+    if ret:
+        frame = cv2.flip(frame, 1)
+
+        end_time = time()
+
+        if (end_time - start_time) > 0:
+            fps = 1 / (end_time - start_time)
+
+        frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        current_date = datetime.date.today()
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        cv2.putText(frame, f"{current_date} {current_time}", 
+                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(frame, f'FPS: {int(fps)}', (500, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+        img = Image.fromarray(frame)
+        imgtk = ImageTk.PhotoImage(image=img)
+        video_label.imgtk = imgtk
+        video_label.configure(image=imgtk)
+    
+    # Repeat after 10 ms
+    root.after(10, lambda: update_normal_frame(capture, video_label, root, int(resized_width), int(resized_height), last_update_time, update_interval, write))
