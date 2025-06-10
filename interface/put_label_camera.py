@@ -4,12 +4,15 @@ from PIL import Image, ImageTk
 from time import time
 import datetime
 import numpy as np
-
+import os
 # from model.running_tensorRT import TensorRTDetection
 # tensorRT = TensorRTDetection(video_capture = 2, model_path = "model/custom_train_yolov10s_4.engine", yaml_path="model/data.yaml")
 register_state = [0, 0, 0, 0]
 from model.ObjectDetection import ObjectDetection
 detection = ObjectDetection("model/training_with_6classes.pt")
+
+recording = False
+out = None
 
 def label_to_put_video(frame, screen_width, screen_height, fixed_video_label=False, label_width=None, label_height=None):
     if fixed_video_label:
@@ -197,3 +200,27 @@ def update_normal_frame(capture:cv2.VideoCapture, video_label:label_to_put_video
     
     # Repeat after 10 ms
     root.after(10, lambda: update_normal_frame(capture, video_label, root, int(resized_width), int(resized_height), last_update_time, update_interval, write))
+
+def capture_image(image_directory, frame):
+    if not os.path.exists(image_directory):
+        os.makedirs(image_directory)
+    filename = os.path.join(image_directory,f"photo_{datetime.datetime.now().strftime('%d%m_%Hh%Mm%Ss')}.jpg")
+    cv2.imwrite(filename, frame)
+    print(f"photo saved as {filename}")
+def record_video(video_directory, vid, record):
+    if recording:
+        recording = False
+        if out:
+            out.release()
+            out = None
+        record.config(text="Start recording")
+        print("Recording stopped")
+    else:
+        recording = True 
+        file_name = os.path.join(video_directory, f"video_{datetime.datetime.now().strftime('%d%M%Y_%Hh%Mm%Ss')}.mp4")
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        frame_width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        out = cv2.VideoWriter(file_name, fourcc, 20.0, (frame_width, frame_height))
+        record.config(text="Stop recording")
+        print(f"Recording started. Saving to {file_name}")
