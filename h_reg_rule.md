@@ -22,7 +22,7 @@ This is for writing or reading holding register:
 
 10. read van xoay  - oke
 
-11. read đẩy tay gắp -- oke
+11. read đẩy tay gắp - oke
 
 12. read van kẹp tay gắp - oke 
 
