@@ -142,6 +142,25 @@ class ThirdFrame():
                                        rely = 0, 
                                        relwidth = (self.video_frame_width - self.lights_frame_width - 1/64 * self.video_frame_width) / self.video_frame_width, 
                                        relheight = 1)
-      self.appearance_mode_option_menu.place(relx = 1/2, rely = 1/4, anchor = "center")
+      self.appearance_mode_option_menu.place(relx = 1/2, rely = 1/6, anchor = "center")
+      
+      self.image_capture_button = ctk.CTkButton(master = self.frame_for_option_menu, 
+                                                text="Capture",
+                                                # width = self.width,
+                                                # height = self.height,
+                                                fg_color = "gray",
+                                                corner_radius = 10, 
+                                                command=self.taking_photo)
+      self.image_capture_button.place(relx = 1/2, rely = 3/6, anchor = "center")
+      self.video_record_button = ctk.CTkButton(master = self.frame_for_option_menu,
+                                               text = "Record",
+                                               fg_color = "gray",
+                                               corner_radius = 10,
+                                               command = self.recording_video)
+      self.video_record_button.place(relx=1/2, rely = 5/6, anchor = "center")
+   def taking_photo(self):
+      pass
+   def recording_video(self):
+      pass
    def change_color(self):
       pass

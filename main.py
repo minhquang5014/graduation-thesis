@@ -20,6 +20,7 @@ class MainWindow(create_window.BiggerWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.test_value = 1
+        self.capture = cv2.VideoCapture(capture_index)
         self.fg_color = fg_color
         self.capture_index = capture_index
         
@@ -41,7 +42,9 @@ class MainWindow(create_window.BiggerWindow):
             self.connect_plc.write(i, 0)
 
         # first frame to put the label video
-        self.video_label, self.label_width, self.label_height = put_label_camera.label_to_put_video(
+        # call out the First Frame
+        self.first = put_label_camera.FirstLabel(video_capture=self.capture_index, image_output_dir="output_images", video_output_dir="output_video")
+        self.video_label, self.label_width, self.label_height = self.first.label_to_put_video(
                 self.root,
                 screen_width=self.screen_width,
                 screen_height=self.screen_height,
@@ -95,6 +98,8 @@ class MainWindow(create_window.BiggerWindow):
             video_frame_height=self.label_height,
             fg_color = self.fg_color
         )
+        self.third.image_capture_button.configure(command=self.first.taking_photo())
+        self.third.video_record_button.configure(command=lambda: self.first.video_capture(self.capture, self.third.video_record_button))
         self.root.after(400, self.read_initial_light1)
         self.root.after(400, self.read_initial_light2)
         self.root.after(400, self.read_initial_light3)
@@ -120,12 +125,11 @@ class MainWindow(create_window.BiggerWindow):
         self.auto_manual_switch = self.fourth.switch
         self.auto_manual_switch.configure(command = self.custom_auto_manual_switch)
 
-        self.capture = cv2.VideoCapture(capture_index)
         ret, frame = self.capture.read()
         if not self.capture.isOpened() or not ret or frame is None:
             self.fourth.insert_textbox(message="Unable to access camera. Please check your camera")
         else:
-            put_label_camera.update_normal_frame(
+            self.first.update_frame(
                 self.capture,
                 self.video_label,
                 self.root,
@@ -145,7 +149,10 @@ class MainWindow(create_window.BiggerWindow):
         # press Esp to exit
         self.root.bind('<Escape>', self.exit_fullscreen)
         self.root.mainloop()
-
+    def taking_photo(self):
+        pass
+    def recording_video(self):
+        pass
     def read_initial_light1(self):  # read state of the conveyor belt
         result_light1 = self.connect_plc.read(9)
         if result_light1 == 0:
