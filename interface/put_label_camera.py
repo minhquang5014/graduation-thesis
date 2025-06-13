@@ -7,8 +7,9 @@ import numpy as np
 import os
 
 class FirstLabel:
-    def __init__(self,video_capture, image_output_dir:str, video_output_dir:str, model_path = None, yaml_path = None, model_type=None):
+    def __init__(self,video_capture, image_output_dir:str, video_output_dir:str, insert_textbox = None, model_path = None, yaml_path = None, model_type=None):
         self.register_state = [0, 0, 0, 0]
+        self.insert_textbox = insert_textbox or (lambda msg: print(f"[Pending UI]: {msg}"))
         self.recording = False
         self.out = None
         self.model_path = model_path
@@ -19,12 +20,15 @@ class FirstLabel:
         self.current_frame = None
         self.model_type = model_type
         if self.model_type == "pt":
-            self.model_path = "model/training_with_6 classes.pt"
+            self.model_path = "model/training_with_6classes.pt" if self.model_path is None else self.model_path
             self.model = self.load_pytorch_model()
+            self.insert_textbox("Loading pytorch model for object detection")
         elif self.model_type == "rt":
-            self.model_path = "model/custom_train_yolov10s_4.engine"
-            self.yaml_path = "model/data.yaml"
+            self.model_path = "model/custom_train_yolov10s_4.engine" if self.model_path is None else self.model_path
+            self.yaml_path = "model/data.yaml" if self.yaml_path is None else self.yaml_path
             self.model = self.load_tensorrt_model()
+            self.insert_textbox("Loading tensorRT model for object detection")
+
 
     def load_tensorrt_model(self):
         from model.running_tensorRT import TensorRTDetection
@@ -49,36 +53,36 @@ class FirstLabel:
     def update_frame(self, capture:cv2.VideoCapture, video_label:label_to_put_video, 
                     root:tk.Tk, resized_width, resized_height, last_update_time, update_interval, write=None):
         ret, frame = capture.read()
-        fps = 0
-        start_time = time()
         if ret:
+            fps = 0
+            start_time = time()
             frame = cv2.flip(frame, 1)
                 # instead of loading .pt model, we'll load the .engine file
                 # from model.ObjectDetection import ObjectDetection
             # frame, fps = detection.__call__(frame)
 
             # frame, xyxys, class_ids = tensorRT.detection(frame)
-            register_state = [0, 0, 0, 0]
-            if self.model_type == None:  # can this disable the model detection if we don't need it??
+            self.register_state = [0, 0, 0, 0]
+            if self.model_type != None:  # can this disable the model detection if we don't need it??
                 frame, xyxys, class_ids = self.model.webcam(frame)
                 for bbox, class_id in zip(xyxys, class_ids):
                     x1, y1, x2, y2 = bbox
                     if class_id == 0:
                         # write holding register to address number 3, value 1
                         # write(3, 1) if write is not None else print("Cannot send signal to address 3, value 1")
-                        register_state[3] = 1
+                        self.register_state[3] = 1
                     elif class_id == 4: # red
-                        register_state[0] = 1
+                        self.register_state[0] = 1
                     elif class_id == 3: # green
-                        register_state[1] = 1
+                        self.register_state[1] = 1
                     elif class_id == 2: # blue
-                        register_state[2] = 1
+                        self.register_state[2] = 1
                     else: 
                         continue
-                print(register_state)
+                print(self.register_state)
                 if time() - last_update_time >= update_interval:
                     for i in range(4):
-                        write(i, register_state[i]) if write is not None else print(f"Cannot write to address {register_state[i]}, value {i}")
+                        write(i, self.register_state[i]) if write is not None else print(f"Cannot write to address {self.register_state[i]}, value {i}")
                     last_update_time = time()
 
             end_time = time()
@@ -101,22 +105,22 @@ class FirstLabel:
             imgtk = ImageTk.PhotoImage(image=img)
             video_label.imgtk = imgtk
             video_label.configure(image=imgtk)
-            self.current_frame = frame.copy()
+            self.current_frame = cv2.cvtColor(frame.copy(), cv2.COLOR_RGBA2BGR)
         # Repeat after 10 ms
         root.after(10, lambda: self.update_frame(capture, video_label, root, int(resized_width), int(resized_height), last_update_time, update_interval, write))
         return int(resized_width), int(resized_height)
     def taking_photo(self):
         # maybe this function can be defined on the main.py file
         if self.current_frame is not None:
-            self.capture_image("images", self.current_frame)
+            self.capture_image(self.current_frame)
         else:
-            print("No frame to capture")
-    def capture_image(self, frame):
+            self.insert_textbox("No frame to capture. Please recheck camera connection")
+    def capture_image(self, frame, image_name = f"photo_{datetime.datetime.now().strftime('%d%m_%Hh%Mm%Ss')}.jpg"):
         if not os.path.exists(self.image_outout_dir):
             os.makedirs(self.image_outout_dir)
-        filename = os.path.join(self.image_outout_dir,f"photo_{datetime.datetime.now().strftime('%d%m_%Hh%Mm%Ss')}.jpg")
+        filename = os.path.join(self.image_outout_dir,image_name)
         cv2.imwrite(filename, frame)
-        print(f"photo saved as {filename}")
+        self.insert_textbox(f"photo saved as {filename}")
     def record_video(self, vid, record_button):
         if self.recording:
             self.recording = False
@@ -124,24 +128,30 @@ class FirstLabel:
                 self.out.release()
                 self.out = None
             record_button.configure(text="Start Recording")
-            print("Recording stopped")
+            self.insert_textbox("Recording stopped")
         else:
             self.recording = True
             if not os.path.exists(self.video_output_dir):
-                os.makedirs(self.image_outout_dir)
+                os.makedirs(self.video_output_dir)
+                self.insert_textbox(f"Creating an output folder to store video recording outputs {self.video_output_dir}")
             file_name = os.path.join(
                 self.video_output_dir,
-                f"video_{datetime.datetime.now().strftime('%d%m%Y_%Hh%Mm%Ss')}.mp4"
+                f"video_{datetime.datetime.now().strftime('%d%m%Y_%Hh%Mm%Ss')}.avi"
             )
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             frame_width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
             frame_height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
             self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (frame_width, frame_height))
             record_button.configure(text="Stop Recording")
-            print(f"Recording started. Saving to {file_name}")
-
+            self.insert_textbox(f"Recording started. Saving to {file_name}")
+    def set_insert_textbox(self, insert_textbox):
+        self.insert_textbox = insert_textbox
         
 
+
+
+
+    # these functions below didn't really work, please don't call it now
     # unnecessary function, just for the purpose of testing
     def update_normal_frame(self, capture:cv2.VideoCapture, video_label:label_to_put_video, 
                     root:tk.Tk, resized_width, resized_height, last_update_time, update_interval, write=None, enable_detection = False):

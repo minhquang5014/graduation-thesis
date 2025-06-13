@@ -33,7 +33,7 @@ class PLCConnection:
                 # Thread(target = self.read(address), daemon=True).start()
                 return result.registers[0] if not result.isError() else None
             except Exception as e:
-                print("Not connected to PLC. Cannot read")
+                print(f"PLC connected but cannot read {address}")
                 return 0  
         else:
             return 0
