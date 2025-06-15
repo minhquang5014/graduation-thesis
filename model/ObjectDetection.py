@@ -145,7 +145,7 @@ class ObjectDetection:
                     continue
             if time() - last_update_time >= update_interval and self.plc_connection_status != False:
                 for i in range(4):
-                    self.call_out_PLC_object.write(i, register_state[i])
+                    self.call_out_PLC_object.write(i, register_state[i]) if self.plc_connection_status != False else print("Cannot send signal to PLC")
                 last_update_time = time()
 
             end_time = time()
@@ -153,9 +153,7 @@ class ObjectDetection:
                 fps = 1/np.round(end_time - start_time, 2)
             # print(fps)
             cv2.putText(frame, f'FPS: {int(fps)}', (20,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-            
             cv2.imshow('YOLOv8 Detection', frame)
- 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         

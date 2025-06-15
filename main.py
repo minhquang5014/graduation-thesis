@@ -43,7 +43,11 @@ class MainWindow(create_window.BiggerWindow):
 
         # first frame to put the label video
         # call out the First Frame
-        self.first = put_label_camera.FirstLabel(video_capture=self.capture_index, model_type="pt", insert_textbox=None,image_output_dir="output_images", video_output_dir="output_video")
+        self.first = put_label_camera.FirstLabel(video_capture=self.capture_index, 
+                                                #  model_type="pt", 
+                                                 insert_textbox=None,
+                                                 image_output_dir="output_images", 
+                                                 video_output_dir="output_video")
         self.video_label, self.label_width, self.label_height = self.first.label_to_put_video(
                 self.root,
                 screen_width=self.screen_width,
@@ -144,7 +148,7 @@ class MainWindow(create_window.BiggerWindow):
                 update_interval=self.update_interval,
                 write=self.connect_plc.write,
             )
-
+        self.open_small_window()
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
         # Thread(target = self.custom_start, daemon=True).start()
         # Thread(target = self.custom_stop, daemon=True).start()
@@ -250,42 +254,49 @@ class MainWindow(create_window.BiggerWindow):
         self.frame_inside_small_window.grid_rowconfigure((1, 2), weight=2, uniform="a")
         self.frame_inside_small_window.grid_columnconfigure((0, 1, 2), weight=1, uniform="a")
         self.title_small_window = ctk.CTkLabel(self.frame_inside_small_window, text="MANUAL CONTROL PANEL", bg_color= "orange", 
-                                                         font=ctk.CTkFont(size=20, weight="bold"))
+                                                         font=ctk.CTkFont(size=20, weight="bold"), fg_color = "black")
         self.title_small_window.grid(row=0, column=0, columnspan=3)
-        self.button1 = ctk.CTkButton(self.frame_inside_small_window,
+        self.row2 = ctk.CTkFrame(self.frame_inside_small_window, fg_color = "black")
+        
+        self.row2.grid(row = 1, column = 0, columnspan = 3)
+
+        self.row2.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform = "a")
+        self.row2.grid_rowconfigure((0), weight=1, uniform = "a")
+        self.button1 = ctk.CTkButton(self.row2,
             text="BĂNG TẢI", 
             corner_radius = 50,  
             command=self.clicked_1)
-        self.button1.grid(row =1, column=0)
-        self.button2 = ctk.CTkButton(self.frame_inside_small_window,
+        self.button1.grid(row = 0, column=0)
+        self.button2 = ctk.CTkButton(self.row2,
             text="VAN XOAY", 
             corner_radius = 50, 
             command=self.clicked_2)
-        self.button2.grid(row =1, column=1)
-        self.button3 = ctk.CTkButton(self.frame_inside_small_window,
+        self.button2.grid(row = 0, column=1)
+        self.button3 = ctk.CTkButton(self.row2,
             text="VAN ĐẨY", 
             corner_radius = 50, 
             command=self.clicked_3)
-        self.button3.grid(row =1, column=2)
-        self.button4 = ctk.CTkButton(self.frame_inside_small_window,
+        self.button3.grid(row = 0, column=2)
+        self.button4 = ctk.CTkButton(self.row2,
             text="VAN KẸP", 
             corner_radius = 50,  
             command=self.clicked_4)
-        self.button4.grid(row =2, column=0)
+        self.button4.grid(row = 0, column=3)
         self.button5 = ctk.CTkButton(self.frame_inside_small_window,
             text="VAN ĐẨY SP ĐỎ", 
             corner_radius = 50, 
             command=self.clicked_5)
-        self.button5.grid(row =2, column=1)
+        self.button5.grid(row =2, column=0)
         self.button6 = ctk.CTkButton(self.frame_inside_small_window,
             text="VAN ĐẨY SP XANH LÁ", 
             corner_radius = 50,  
             command=self.clicked_6)
-        self.button6.grid(row =2, column=2)
+        self.button6.grid(row =2, column=1)
         self.button7 = ctk.CTkButton(self.frame_inside_small_window,
             text = "VAN ĐẨY SP XANH DƯƠNG",
             corner_radius = 50, 
             command=self.clicked_7)
+        self.button7.grid(row = 2, column = 2)
     def clicked_1(self):
         self.light1_on = not self.light1_on
         if self.light1_on:
