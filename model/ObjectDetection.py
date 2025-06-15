@@ -5,8 +5,13 @@ from time import time
 from supervision.draw.color import ColorPalette, Color
 from supervision import Detections, BoxAnnotator
 import cv2
-colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 
+try:
+    from PLC.plc_connection import PLCConnection
+except Exception as e:
+    print(f"import error: {e}")
+
+colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 
 class ObjectDetection:
     def __init__(self, model):
@@ -23,9 +28,11 @@ class ObjectDetection:
         self.model.to(self.device)
         self.CLASS_NAMES_DICT = self.model.model.names
         self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
-    # def predict(self):
-    #     return self.model(self.frame)
-    
+        self.plc_connection_status = False
+    def connect_plc(self):
+        self.call_out_PLC_object = PLCConnection()  # no need to specify the ip address and port, let's just put the default value there
+        self.plc_connection_status = self.call_out_PLC_object.connectPLC()
+
     def plot_boxes(self, results, frame, conf_threshold = 0.8):
         xyxys = []
         confidence = []
@@ -63,7 +70,7 @@ class ObjectDetection:
         class_ids = []
         for ((x1, y1, x2, y2), class_id) in boxes:
             xyxys.append((x1, y1, x2, y2))
-            class_ids. append(class_id)
+            class_ids.append(class_id)
         # if len(boxes) != 0:
         #     for (x1, y1, x2, y2), class_id in boxes:
         #         if class_id == 0:
@@ -108,6 +115,8 @@ class ObjectDetection:
 
     def video(self):
         cap = cv2.VideoCapture(2)
+        last_update_time = time()
+        update_interval = 0.4
         assert cap.isOpened()
         fps = 0
         # set the resolution for the frame
@@ -122,6 +131,23 @@ class ObjectDetection:
                 break
             results = self.model(frame)
             frame, boxes_out = self.plot_boxes(results, frame)
+            register_state = [0, 0, 0, 0]
+            for ((x1, y1, x2, y2), class_id) in boxes_out:
+                if class_id == 0:
+                    register_state[3] = 1
+                elif class_id == 4:
+                    register_state[0] = 1
+                elif class_id == 3:
+                    register_state[1] = 1
+                elif class_id == 2:
+                    register_state[2] = 1
+                else:
+                    continue
+            if time() - last_update_time >= update_interval and self.plc_connection_status != False:
+                for i in range(4):
+                    self.call_out_PLC_object.write(i, register_state[i])
+                last_update_time = time()
+
             end_time = time()
             if end_time - start_time != 0:
                 fps = 1/np.round(end_time - start_time, 2)
@@ -138,5 +164,5 @@ class ObjectDetection:
 if __name__ == '__main__':
     # detector = ObjectDetection(capture_index=0)
     detector = ObjectDetection(model = "model/training_with_6classes.pt")
-
+    connect_plc = detector.connect_plc()
     detector.video()

@@ -115,6 +115,7 @@ class FourthFrame():
         self.textbox.configure(state = "normal")
         self.textbox.insert(tk.END, current_time + ":"+ " " + message + "\n")
         self.textbox.configure(state = "disabled")
+        self.textbox.yview_moveto(1)
 
     def switch_event(self):
         pass

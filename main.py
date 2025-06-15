@@ -20,6 +20,7 @@ class MainWindow(create_window.BiggerWindow):
     def __init__(self, fg_color = "#ffd7b5", capture_index = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.test_value = 1
+        self.capture = cv2.VideoCapture(capture_index)
         self.fg_color = fg_color
         self.capture_index = capture_index
         
@@ -41,7 +42,9 @@ class MainWindow(create_window.BiggerWindow):
             self.connect_plc.write(i, 0)
 
         # first frame to put the label video
-        self.video_label, self.label_width, self.label_height = put_label_camera.label_to_put_video(
+        # call out the First Frame
+        self.first = put_label_camera.FirstLabel(video_capture=self.capture_index, model_type="pt", insert_textbox=None,image_output_dir="output_images", video_output_dir="output_video")
+        self.video_label, self.label_width, self.label_height = self.first.label_to_put_video(
                 self.root,
                 screen_width=self.screen_width,
                 screen_height=self.screen_height,
@@ -82,6 +85,10 @@ class MainWindow(create_window.BiggerWindow):
         self.second.blue_reset.configure(command=self.reset3)
         self.second.NG_reset.configure(command=self.reset4)
 
+        self.root.after(1000, self.update_red_show)
+        self.root.after(1000, self.update_green_show)
+        self.root.after(1000, self.update_blue_show)
+        self.root.after(1000, self.update_NG_show)
         self.root.after(1000, self.check_storage_limit_red)
         self.root.after(1000, self.check_storage_limit_green)
         self.root.after(1000, self.check_storage_limit_blue)
@@ -95,6 +102,8 @@ class MainWindow(create_window.BiggerWindow):
             video_frame_height=self.label_height,
             fg_color = self.fg_color
         )
+        self.third.image_capture_button.configure(command=self.first.taking_photo)
+        self.third.video_record_button.configure(command=lambda: self.first.record_video(self.capture, self.third.video_record_button))
         self.root.after(400, self.read_initial_light1)
         self.root.after(400, self.read_initial_light2)
         self.root.after(400, self.read_initial_light3)
@@ -107,6 +116,7 @@ class MainWindow(create_window.BiggerWindow):
             video_frame_height=self.label_height, 
             fg_color = self.fg_color
         )
+        self.first.set_insert_textbox(self.fourth.insert_textbox)
         self.small_window = None
         if self.small_window == None:
             self.fourth.auto_canvas_light.itemconfig(self.fourth.auto, fill="green")
@@ -120,12 +130,11 @@ class MainWindow(create_window.BiggerWindow):
         self.auto_manual_switch = self.fourth.switch
         self.auto_manual_switch.configure(command = self.custom_auto_manual_switch)
 
-        self.capture = cv2.VideoCapture(capture_index)
         ret, frame = self.capture.read()
         if not self.capture.isOpened() or not ret or frame is None:
             self.fourth.insert_textbox(message="Unable to access camera. Please check your camera")
         else:
-            put_label_camera.update_normal_frame(
+            self.first.update_frame(
                 self.capture,
                 self.video_label,
                 self.root,
@@ -134,7 +143,6 @@ class MainWindow(create_window.BiggerWindow):
                 last_update_time=self.last_update_time,
                 update_interval=self.update_interval,
                 write=self.connect_plc.write,
-                enable_detection=True
             )
 
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
@@ -145,7 +153,8 @@ class MainWindow(create_window.BiggerWindow):
         # press Esp to exit
         self.root.bind('<Escape>', self.exit_fullscreen)
         self.root.mainloop()
-
+    def insert_textbox_callback(self, msg):
+        self.fourth.insert_textbox(msg)
     def read_initial_light1(self):  # read state of the conveyor belt
         result_light1 = self.connect_plc.read(9)
         if result_light1 == 0:
@@ -354,6 +363,14 @@ class MainWindow(create_window.BiggerWindow):
         value1 = self.second.integer_var.get()
         if not value1.isdigit():
             self.second.integer_var.set(''.join(filter(str.isdigit, value1)))
+    def update_red_show(self):
+        read_value1 = self.connect_plc.read(25)
+        self.second.red_show.configure(state=tk.NORMAL)
+        self.second.red_show.delete("1.0", tk.END)
+        self.second.red_show.insert(tk.END, str(read_value1))
+        self.second.red_show.tag_add("center", "1.0", "end")
+        self.second.red_show.configure(state=tk.DISABLED)
+        self.root.after(1000, self.update_red_show)
     def validate_integer_red(self, *args):   
         value = self.second.integer_var.get()
         if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
@@ -396,6 +413,14 @@ class MainWindow(create_window.BiggerWindow):
         value2 = self.second.integer_var2.get()
         if not value2.isdigit():
             self.second.integer_var2.set(''.join(filter(str.isdigit, value2)))
+    def update_green_show(self):
+        read_value2 = self.connect_plc.read(26)
+        self.second.green_show.configure(state=tk.NORMAL)
+        self.second.green_show.delete("1.0", tk.END)
+        self.second.green_show.insert(tk.END, str(read_value2))
+        self.second.green_show.tag_add("center", "1.0", "end")
+        self.second.green_show.configure(state=tk.DISABLED)
+        self.root.after(1000, self.update_green_show)
     def validate_integer_green(self, *args):
         value = self.second.integer_var2.get()
         if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
@@ -439,6 +464,14 @@ class MainWindow(create_window.BiggerWindow):
         value3 = self.second.integer_var3.get()
         if not value3.isdigit():
             self.second.integer_var3.set(''.join(filter(str.isdigit, value3)))
+    def update_blue_show(self):
+        read_value3 = self.connect_plc.read(27)
+        self.second.blue_show.configure(state=tk.NORMAL)
+        self.second.blue_show.delete("1.0", tk.END)
+        self.second.blue_show.insert(tk.END, str(read_value3))
+        self.second.blue_show.tag_add("center", "1.0", "end")
+        self.second.blue_show.configure(state=tk.DISABLED)
+        self.root.after(1000, self.update_blue_show)
     def validate_integer_blue(self, *args):
         value = self.second.integer_var3.get()
         if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
@@ -482,6 +515,14 @@ class MainWindow(create_window.BiggerWindow):
         value4 = self.second.integer_var4.get()
         if not value4.isdigit():
             self.second.integer_var4.set(''.join(filter(str.isdigit, value4)))
+    def update_NG_show(self):
+        read_value4 = self.connect_plc.read(28)
+        self.second.NG_show.configure(state=tk.NORMAL)
+        self.second.NG_show.delete("1.0", tk.END)
+        self.second.NG_show.insert(tk.END, str(read_value4))
+        self.second.NG_show.tag_add("center", "1.0", "end")
+        self.second.NG_show.configure(state=tk.DISABLED)
+        self.root.after(1000, self.update_NG_show)
     def validate_integer_NG(self, *args):
         value = self.second.integer_var4.get()
         if value.isdigit() and int(value) > DEFAULT_NUMBER_OBJ:   
@@ -528,5 +569,5 @@ class MainWindow(create_window.BiggerWindow):
 
 if __name__ == "__main__":
     # MainWindow(capture_index = "video/video_07332025_11h33m31s.avi")
-    MainWindow(capture_index = 2)
+    MainWindow(capture_index = 0)
     

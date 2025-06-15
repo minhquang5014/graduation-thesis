@@ -44,13 +44,13 @@ This is for writing or reading holding register:
 
 24. Reset number of NG objects
 
-25. Read the number of current red objects
+25. Read the number of current red objects  - oke
 
-26. Read the number of current green objects            
+26. Read the number of current green objects - oke    
 
-27. Read the number of current blue objects
+27. Read the number of current blue objects - oke 
 
-28. Read the number of current NG objects
+28. Read the number of current NG objects - oke
 
 30. Check if red storage is full
 
