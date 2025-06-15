@@ -13,7 +13,7 @@ class Webcam:
         self.window = window
         self.window_title = window_title
 
-        self.video_capture = 1
+        self.video_capture = 2
         self.vid = cv2.VideoCapture(self.video_capture)
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)

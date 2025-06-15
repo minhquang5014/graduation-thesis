@@ -26,7 +26,7 @@ class ObjectDetection:
     # def predict(self):
     #     return self.model(self.frame)
     
-    def plot_boxes(self, results, frame, conf_threshold = 0.6):
+    def plot_boxes(self, results, frame, conf_threshold = 0.8):
         xyxys = []
         confidence = []
         class_ids = []
@@ -56,49 +56,87 @@ class ObjectDetection:
             boxes_out.append(((x1, y1, x2, y2), class_id))
         return frame, boxes_out
     
-    def __call__(self, frame):
-        start_time = time()
+    def webcam(self, frame):
         results = self.model(frame)
         frame, boxes = self.plot_boxes(results, frame)
-        if len(boxes) != 0:
-            for (x1, y1, x2, y2), class_id in boxes:
-                if class_id == 0:
-                    continue
-                w1 = x2 - x1
-                h1 = y2 - y1
-                ROI = frame[y1:y2, x1:x2]
+        xyxys = []
+        class_ids = []
+        for ((x1, y1, x2, y2), class_id) in boxes:
+            xyxys.append((x1, y1, x2, y2))
+            class_ids. append(class_id)
+        # if len(boxes) != 0:
+        #     for (x1, y1, x2, y2), class_id in boxes:
+        #         if class_id == 0:
+        #             continue
+        #         w1 = x2 - x1
+        #         h1 = y2 - y1
+        #         ROI = frame[y1:y2, x1:x2]
 
-                # convert the ROI to HSV color format
-                hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
+        #         # convert the ROI to HSV color format
+        #         hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
 
-                masked_red = cv2.inRange(hsv_roi, self.lower_red, self.upper_red)
-                masked_blue = cv2.inRange(hsv_roi, self.lower_blue, self.upper_blue)
-                masked_green = cv2.inRange(hsv_roi, self.lower_green, self.upper_green)
+        #         masked_red = cv2.inRange(hsv_roi, self.lower_red, self.upper_red)
+        #         masked_blue = cv2.inRange(hsv_roi, self.lower_blue, self.upper_blue)
+        #         masked_green = cv2.inRange(hsv_roi, self.lower_green, self.upper_green)
 
-                contours_red, _ = cv2.findContours(masked_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                contours_blue, _ = cv2.findContours(masked_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                contours_green, _ = cv2.findContours(masked_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        #         contours_red, _ = cv2.findContours(masked_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        #         contours_blue, _ = cv2.findContours(masked_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        #         contours_green, _ = cv2.findContours(masked_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                 
-                for contour in contours_red:
-                    if cv2.contourArea(contour) > 1/4 * w1 * h1:
-                        x, y, w, h = cv2.boundingRect(contour)
-                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
-                        cv2.putText(frame, "red", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                for contour in contours_blue:
-                    if cv2.contourArea(contour) > 1/4 * w1 * h1:
-                        x, y, w, h = cv2.boundingRect(contour)
-                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
-                        cv2.putText(frame, "blue", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-                for contour in contours_green:
-                    if cv2.contourArea(contour) > 1/4 * w1 * h1:
-                        x, y, w, h = cv2.boundingRect(contour)
-                        cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
-                        cv2.putText(frame, "green", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        #         for contour in contours_red:
+        #             if cv2.contourArea(contour) > 1/4 * w1 * h1:
+        #                 x, y, w, h = cv2.boundingRect(contour)
+        #                 cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
+        #                 cv2.putText(frame, "red", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        #         for contour in contours_blue:
+        #             if cv2.contourArea(contour) > 1/4 * w1 * h1:
+        #                 x, y, w, h = cv2.boundingRect(contour)
+        #                 cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
+        #                 cv2.putText(frame, "blue", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+        #         for contour in contours_green:
+        #             if cv2.contourArea(contour) > 1/4 * w1 * h1:
+        #                 x, y, w, h = cv2.boundingRect(contour)
+        #                 cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
+        #                 cv2.putText(frame, "green", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-        end_time = time()
+        # end_time = time()
 
-        if start_time - end_time != 0:
-            fps = 1/np.round(end_time - start_time, 2)
+        # if start_time - end_time != 0:
+        #     fps = 1/np.round(end_time - start_time, 2)
         # cv2.putText(frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-        return frame, fps
-    
+        return frame, xyxys, class_ids
+
+    def video(self):
+        cap = cv2.VideoCapture(2)
+        assert cap.isOpened()
+        fps = 0
+        # set the resolution for the frame
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+        while True:
+            start_time = time()
+            ret, frame = cap.read()
+            frame = cv2.flip(frame, 1)
+            if not ret:
+                break
+            results = self.model(frame)
+            frame, boxes_out = self.plot_boxes(results, frame)
+            end_time = time()
+            if end_time - start_time != 0:
+                fps = 1/np.round(end_time - start_time, 2)
+            # print(fps)
+            cv2.putText(frame, f'FPS: {int(fps)}', (20,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            
+            cv2.imshow('YOLOv8 Detection', frame)
+ 
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+        
+        cap.release()
+        cv2.destroyAllWindows()
+if __name__ == '__main__':
+    # detector = ObjectDetection(capture_index=0)
+    detector = ObjectDetection(model = "model/training_with_6classes.pt")
+
+    detector.video()

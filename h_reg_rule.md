@@ -26,14 +26,6 @@ This is for writing or reading holding register:
 
 12. read van kẹp tay gắp - oke 
 
-13. read van đẩy sp red
-
-14. read van đẩy sp green
-
-14. read van đẩy sp blue
-
-<!-- 15. read van đẩy sp NG -->
-
 16. Start program
 
 17. Write the number of red objects
@@ -67,3 +59,25 @@ This is for writing or reading holding register:
 32. Check if blue storage is full
 
 33. Check if Ng storage is full
+
+34. read if red object is recognized and processed
+
+35. read if green object is recognized and processed
+
+36. read if blue object is recognized and processed
+
+37. read if NG object is recognized and processed
+
+38. write manual "bang tai" 
+
+39. write manual "van xoay"
+
+40. write manual "van day xa"
+
+41. write manual "van kep"
+
+42. write manual "van day sp 1"
+
+43. write manual "van day sp 2"
+
+44. write manual "van day sp 3"
