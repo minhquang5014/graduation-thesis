@@ -28,8 +28,6 @@ class FirstLabel:
             self.yaml_path = "model/data.yaml" if self.yaml_path is None else self.yaml_path
             self.model = self.load_tensorrt_model()
             self.insert_textbox("Loading tensorRT model for object detection")
-
-
     def load_tensorrt_model(self):
         from model.running_tensorRT import TensorRTDetection
         self.tensorRT = TensorRTDetection(video_capture = self.video_capture, model_path = self.model_path, yaml_path=self.yaml_path)
@@ -38,7 +36,6 @@ class FirstLabel:
         from model.ObjectDetection import ObjectDetection
         self.detection = ObjectDetection(self.model_path)
         return self.detection  # call out the object
-
     def label_to_put_video(self, frame, screen_width, screen_height, fixed_video_label=False, label_width=None, label_height=None):
         if fixed_video_label:
             label_width = 640
@@ -49,7 +46,6 @@ class FirstLabel:
         video_label = tk.Label(frame, bg="black")
         video_label.place(x=0, y=0, relwidth=label_width/screen_width, relheight=label_height/screen_height)
         return video_label, label_width, label_height
-
     def update_frame(self, capture:cv2.VideoCapture, video_label:label_to_put_video, 
                     root:tk.Tk, resized_width, resized_height, last_update_time, update_interval, write=None):
         ret, frame = capture.read()
@@ -84,12 +80,9 @@ class FirstLabel:
                     for i in range(4):
                         write(i, self.register_state[i]) if write is not None else print(f"Cannot write to address {self.register_state[i]}, value {i}")
                     last_update_time = time()
-
             end_time = time()
-
             if (end_time - start_time) > 0:
                 fps = 1 / (end_time - start_time)
-
             frame = cv2.resize(frame, (int(resized_width), int(resized_height)))
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
             current_date = datetime.date.today()
