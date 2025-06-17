@@ -5,9 +5,12 @@ from time import time
 from supervision.draw.color import ColorPalette, Color
 from supervision import Detections, BoxAnnotator
 import cv2
-
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 try:
-    from ..PLC.plc_connection import PLCConnection
+    from PLC.plc_connection import PLCConnection
+    print(f"import PLC module successfully")
 except Exception as e:
     print(f"import errro: {e}")
 
@@ -32,7 +35,7 @@ class ObjectDetection:
     def connect_plc(self):
         self.call_out_PLC_object = PLCConnection()  # no need to specify the ip address and port, let's just put the default value there
         self.plc_connection_status = self.call_out_PLC_object.connectPLC()
-
+        return self.plc_connection_status
     def plot_boxes(self, results, frame, conf_threshold = 0.8):
         xyxys = []
         confidence = []
@@ -71,46 +74,7 @@ class ObjectDetection:
         for ((x1, y1, x2, y2), class_id) in boxes:
             xyxys.append((x1, y1, x2, y2))
             class_ids.append(class_id)
-        # if len(boxes) != 0:
-        #     for (x1, y1, x2, y2), class_id in boxes:
-        #         if class_id == 0:
-        #             continue
-        #         w1 = x2 - x1
-        #         h1 = y2 - y1
-        #         ROI = frame[y1:y2, x1:x2]
-
-        #         # convert the ROI to HSV color format
-        #         hsv_roi = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-
-        #         masked_red = cv2.inRange(hsv_roi, self.lower_red, self.upper_red)
-        #         masked_blue = cv2.inRange(hsv_roi, self.lower_blue, self.upper_blue)
-        #         masked_green = cv2.inRange(hsv_roi, self.lower_green, self.upper_green)
-
-        #         contours_red, _ = cv2.findContours(masked_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        #         contours_blue, _ = cv2.findContours(masked_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        #         contours_green, _ = cv2.findContours(masked_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                
-        #         for contour in contours_red:
-        #             if cv2.contourArea(contour) > 1/4 * w1 * h1:
-        #                 x, y, w, h = cv2.boundingRect(contour)
-        #                 cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
-        #                 cv2.putText(frame, "red", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-        #         for contour in contours_blue:
-        #             if cv2.contourArea(contour) > 1/4 * w1 * h1:
-        #                 x, y, w, h = cv2.boundingRect(contour)
-        #                 cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
-        #                 cv2.putText(frame, "blue", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-        #         for contour in contours_green:
-        #             if cv2.contourArea(contour) > 1/4 * w1 * h1:
-        #                 x, y, w, h = cv2.boundingRect(contour)
-        #                 cv2.rectangle(frame, (x + x1, y + y1), (x + x1 + w, y + y1 + h), (76, 153, 0), 3)  # Draw rectangle
-        #                 cv2.putText(frame, "green", (x + x1, y + y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-        # end_time = time()
-
-        # if start_time - end_time != 0:
-        #     fps = 1/np.round(end_time - start_time, 2)
-        # cv2.putText(frame, f'FPS: {int(fps)}', (500, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+        
         return frame, xyxys, class_ids
 
     def video(self):
@@ -143,7 +107,7 @@ class ObjectDetection:
                     register_state[2] = 1
                 else:
                     continue
-            if time() - last_update_time >= update_interval and self.plc_connection_status != False:
+            if time() - last_update_time >= update_interval:
                 for i in range(4):
                     self.call_out_PLC_object.write(i, register_state[i]) if self.plc_connection_status != False else print("Cannot send signal to PLC")
                 last_update_time = time()

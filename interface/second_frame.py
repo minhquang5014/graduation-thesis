@@ -106,7 +106,7 @@ class SecondFrame():
             relheight = (4/9 * self.video_frame_height) / self.video_frame_height
         )
     def start_stop_lights(self):
-        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color="black", 
+        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color, 
                                         #  border_color="black",
                                         # border_width=2, corner_radius = 10
                                         )

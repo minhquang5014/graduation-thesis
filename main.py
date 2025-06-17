@@ -581,5 +581,5 @@ class MainWindow(create_window.BiggerWindow):
 
 if __name__ == "__main__":
     # MainWindow(capture_index = "video/video_07332025_11h33m31s.avi")
-    MainWindow(capture_index = 0)
+    MainWindow(capture_index = 2)
     
