@@ -11,11 +11,13 @@ from PIL import ImageTk, Image
 import threading
 import datetime
 import os
-
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 try:
-    from PLC.plc_connection import PLCConnection
+    from . import PLC
+    print("Import successfully")
 except ModuleNotFoundError:
-    print("Cannot import module")
+    print("Import error")
 colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 class Webcam:
     def __init__(self, capture_index, model, window, window_title, detection=False):
@@ -164,9 +166,7 @@ class Webcam:
 
             if self.is_recording and self.out is not None:
                 self.out.write(frame)
-
-            frameS = cv2.resize(frame, (0, 0), None, 0.5, 0.5)
-            frameS = cv2.cvtColor(frameS, cv2.COLOR_BGR2RGB)
+            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             # faceLocs = face_recognition.face_locations(frameS)
 

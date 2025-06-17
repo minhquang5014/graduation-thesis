@@ -96,8 +96,8 @@ class Webcam:
                 self.out.write(frame)
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frameS = cv2.resize(frame, (0, 0), None, 0.5, 0.5)
-            frameS = cv2.cvtColor(frameS, cv2.COLOR_BGR2RGB)
+            # frameS = cv2.resize(frame, (0, 0), None, 0.5, 0.5)
+            # frameS = cv2.cvtColor(frameS, cv2.COLOR_BGR2RGB)
 
             # faceLocs = face_recognition.face_locations(frameS)
 

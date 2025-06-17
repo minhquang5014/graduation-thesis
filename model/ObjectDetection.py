@@ -7,9 +7,9 @@ from supervision import Detections, BoxAnnotator
 import cv2
 
 try:
-    from PLC.plc_connection import PLCConnection
+    from ..PLC.plc_connection import PLCConnection
 except Exception as e:
-    print(f"import error: {e}")
+    print(f"import errro: {e}")
 
 colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 

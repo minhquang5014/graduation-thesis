@@ -55,11 +55,3 @@ python main.py
 
 try this link for custom dataset training YOLO algorithm: 
 https://colab.research.google.com/drive/1gKWAqVv6I7dweRXXHkcduv75wYB0CziR#scrollTo=djn8NVnvd-yi
-
-Trong cả folder tổng này có những lưu ý sau:
-- Folder helping tools bao gồm những file công cụ hỗ trợ: Chụp ảnh, rename ảnh, và sắp xếp ảnh theo folder kích cỡ dưới 20MB
-- images là ảnh, nhưng tạm thời xóa đi cho nhẹ folder, đẩy lên github dễ dàng. Mọi hình ảnh để huấn luyện đã ở hết trên roboflow: 
-app.roboflow.com/quang-w1gnb/detect-ng-vs-good-products/annotate
-- folder interface gõ giao diện, đặt các element lên giao diện, nhưng việc xử lí logic đằng sau những element đó ở file main.py
-- PLC để xử lí logic: kết nối plc, gửi và đọc tín hiệu từ PLC
-- 
