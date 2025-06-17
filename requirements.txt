@@ -13,3 +13,4 @@ tensorrt_dispatch
 onnx
 onnxsim
 onnxruntime-gpu
+torch

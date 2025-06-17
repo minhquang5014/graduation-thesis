@@ -11,23 +11,28 @@ from PIL import ImageTk, Image
 import threading
 import datetime
 import os
+
+try:
+    from PLC.plc_connection import PLCConnection
+except ModuleNotFoundError:
+    print("Cannot import module")
 colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 class Webcam:
-    def __init__(self,model, window, window_title, detection=False):
+    def __init__(self, capture_index, model, window, window_title, detection=False):
         self.window = window
         self.window_title = window_title
-
+        self.capture_index = capture_index
+        self.model = model
         if detection == True:
             self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
             print(f"Device used: {self.device}")
 
-            self.model = YOLO(model)
+            self.model = YOLO(self.model)
             self.model.fuse
             self.CLASS_NAMES_DICT = self.model.model.names 
             self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
 
-        self.video_capture = 2
-        self.vid = cv2.VideoCapture(self.video_capture)
+        self.vid = cv2.VideoCapture(self.capture_index)
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
         self.canvas = tk.Canvas(window, width=self.width, height=self.height)
@@ -188,6 +193,14 @@ class Webcam:
                 self.out = None
         self.vid.release()
         self.window.destroy()
+        
+if __name__ == '__main__':
+    root = tk.Tk()
+    webcam_detectuion = Webcam(capture_index="video/3.avi",model = "model/best.pt", window=root, window_title="Detection interface", detection=True)
+
+
+
+
 
 class ObjectDetection:
     def __init__(self, model, capture_index=0):
@@ -271,6 +284,5 @@ class ObjectDetection:
         cv2.destroyAllWindows()
         
 # detector = ObjectDetection(capture_index=0)
-detector = ObjectDetection(model = "model/custom_train_yolov10s.pt", capture_index=0)
-
-detector()
+# detector = ObjectDetection(model = "model/custom_train_yolov10s.pt", capture_index=0)
+# detector()
