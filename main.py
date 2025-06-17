@@ -44,7 +44,8 @@ class MainWindow(create_window.BiggerWindow):
         # first frame to put the label video
         # call out the First Frame
         self.first = put_label_camera.FirstLabel(video_capture=self.capture_index, 
-                                                #  model_type="pt", 
+                                                 model_type="pt", 
+                                                 model_path="model/best.pt",
                                                  insert_textbox=None,
                                                  image_output_dir="output_images", 
                                                  video_output_dir="output_video")
@@ -148,7 +149,7 @@ class MainWindow(create_window.BiggerWindow):
                 update_interval=self.update_interval,
                 write=self.connect_plc.write,
             )
-        self.open_small_window()
+        # self.open_small_window()
         Thread(target = self.connect_plc.connectPLC, daemon=True).start()
         # Thread(target = self.custom_start, daemon=True).start()
         # Thread(target = self.custom_stop, daemon=True).start()
@@ -254,9 +255,9 @@ class MainWindow(create_window.BiggerWindow):
         self.frame_inside_small_window.grid_rowconfigure((1, 2), weight=2, uniform="a")
         self.frame_inside_small_window.grid_columnconfigure((0, 1, 2), weight=1, uniform="a")
         self.title_small_window = ctk.CTkLabel(self.frame_inside_small_window, text="MANUAL CONTROL PANEL", bg_color= "orange", 
-                                                         font=ctk.CTkFont(size=20, weight="bold"), fg_color = "black")
+                                                         font=ctk.CTkFont(size=20, weight="bold"))
         self.title_small_window.grid(row=0, column=0, columnspan=3)
-        self.row2 = ctk.CTkFrame(self.frame_inside_small_window, fg_color = "black")
+        self.row2 = ctk.CTkFrame(self.frame_inside_small_window)
         
         self.row2.grid(row = 1, column = 0, columnspan = 3)
 
@@ -266,22 +267,22 @@ class MainWindow(create_window.BiggerWindow):
             text="BĂNG TẢI", 
             corner_radius = 50,  
             command=self.clicked_1)
-        self.button1.grid(row = 0, column=0)
+        self.button1.grid(row = 0, column=0, padx=20)
         self.button2 = ctk.CTkButton(self.row2,
             text="VAN XOAY", 
             corner_radius = 50, 
             command=self.clicked_2)
-        self.button2.grid(row = 0, column=1)
+        self.button2.grid(row = 0, column=1, padx=20)
         self.button3 = ctk.CTkButton(self.row2,
             text="VAN ĐẨY", 
             corner_radius = 50, 
             command=self.clicked_3)
-        self.button3.grid(row = 0, column=2)
+        self.button3.grid(row = 0, column=2, padx=20)
         self.button4 = ctk.CTkButton(self.row2,
             text="VAN KẸP", 
             corner_radius = 50,  
             command=self.clicked_4)
-        self.button4.grid(row = 0, column=3)
+        self.button4.grid(row = 0, column=3, padx=20)
         self.button5 = ctk.CTkButton(self.frame_inside_small_window,
             text="VAN ĐẨY SP ĐỎ", 
             corner_radius = 50, 

@@ -106,7 +106,7 @@ class SecondFrame():
             relheight = (4/9 * self.video_frame_height) / self.video_frame_height
         )
     def start_stop_lights(self):
-        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color=self.fg_color, 
+        self.lights_frame = ctk.CTkFrame(self.second_frame, fg_color="black", 
                                         #  border_color="black",
                                         # border_width=2, corner_radius = 10
                                         )
@@ -141,16 +141,16 @@ class SecondFrame():
         #                                         font=ctk.CTkFont(size=10, weight="bold"))
         # self.lights_start.place(relx = 1/4, rely = 1, anchor = tk.CENTER)
         self.lights_canvas_start.create_text(3/32 * self.button_frame_width ,
-                                                7/8 * self.button_frame_height / 2,
+                                             self.button_frame_height,
                                                 text = "Start",
                                                 fill = "black",
-                                                font = ctk.CTkFont(size=10, weight="bold")
+                                                font = ctk.CTkFont(size=12, weight="bold")
                                                 )
         self.lights_canvas_stop.create_text((3/32 * self.button_frame_width),
-                                            7/8 * self.button_frame_height / 2,
+                                            self.button_frame_height,
                                                 text = "Stop",
                                                 fill = "black",
-                                                font = ctk.CTkFont(size=10, weight="bold")
+                                                font = ctk.CTkFont(size=12, weight="bold")
                                                 )
         self.lights_frame.update()
 

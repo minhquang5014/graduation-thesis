@@ -3,10 +3,191 @@ import numpy as np
 import cv2
 from time import time
 from ultralytics import YOLO
-
 from supervision.draw.color import ColorPalette, Color
 from supervision import Detections, BoxAnnotator
+import tkinter as tk
+from tkinter import Button
+from PIL import ImageTk, Image
+import threading
+import datetime
+import os
 colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
+class Webcam:
+    def __init__(self,model, window, window_title, detection=False):
+        self.window = window
+        self.window_title = window_title
+
+        if detection == True:
+            self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+            print(f"Device used: {self.device}")
+
+            self.model = YOLO(model)
+            self.model.fuse
+            self.CLASS_NAMES_DICT = self.model.model.names 
+            self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
+
+        self.video_capture = 2
+        self.vid = cv2.VideoCapture(self.video_capture)
+        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        self.canvas = tk.Canvas(window, width=self.width, height=self.height)
+        self.canvas.pack()
+
+        self.btn_record = Button(window, text="record", width=15, command=self.record)
+        self.btn_record.pack(side=tk.LEFT)
+
+        self.btn_snapphoto = Button(window, text="take photo", width=15, command = self.take_photo)
+        self.btn_snapphoto.pack(side=tk.LEFT)
+    
+        self.show_box = False
+        self.text = tk.Text(window, width = int(self.width/40), height = int(self.height / 200))
+        self.text.tag_configure("center", justify='center', foreground="red", font=("helvetica", 12, "bold"))
+        self.text.insert(tk.END, "no face detected")
+        self.text.tag_add("center", "1.0", "end")
+        self.text.configure(state=tk.DISABLED)
+        self.text.pack(side=tk.LEFT)
+
+        self.button_show = Button(window, text="Show_bounding_box", width = 20, command = self.toggle_box)
+        self.button_show.pack(side=tk.LEFT)
+
+        self.is_recording = False
+        self.out = None
+        
+        self.directories = "images"
+        if not os.path.exists(self.directories):
+            os.makedirs(self.directories)
+        self.update()
+        self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.window.mainloop()
+        
+    def toggle_box(self):
+        self.show_box = not self.show_box
+
+    def face_detected(self):
+        self.text.configure(state=tk.NORMAL)
+        self.text.delete("1.0", tk.END)
+        self.text.insert(tk.END, "face_detected")
+        self.text.tag_add("center", "1.0", "end")
+        self.text.configure(state=tk.DISABLED)
+    def no_face_detected(self):
+        self.text.configure(state=tk.NORMAL)
+        self.text.delete("1.0", tk.END)
+        self.text.insert(tk.END, "no face detected")
+        self.text.tag_add("center", "1.0", "end")
+        self.text.configure(state=tk.DISABLED)
+
+    def predict(self, frame):
+        return self.model(frame)
+    
+    def plot_boxes(self, results, frame):
+        xyxys = []
+        confidence = []
+        class_ids = []
+
+        for result in results[0]:
+
+            class_id = result.boxes.cls.cpu().numpy().astype(int)
+            if class_id == 0:
+                # get the coordinate
+                xyxys.append(result.boxes.xyxy.cpu().numpy())
+
+                # get the confidence score
+                confidence.append(result.boxes.conf.cpu().numpy())
+
+                class_ids.append(result.boxes.cls.cpu().numpy().astype(int))
+                
+        detections = Detections(
+                xyxy=results[0].boxes.xyxy.cpu().numpy(),
+                confidence=results[0].boxes.conf.cpu().numpy(),
+                class_id=results[0].boxes.cls.cpu().numpy().astype(int)
+        )
+        for bbox, confidence, class_id in zip(detections.xyxy, detections.confidence, detections.class_id):
+            # if confidence 
+            self.labels = [f"{self.CLASS_NAMES_DICT[class_id]}"]
+            
+            #crappu code by the way
+            x1, y1, x2, y2 = bbox[0], bbox[1], bbox[2], bbox[3]
+            
+            # print(x1, y1, x2, y2)
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 255), 2)
+
+            # frame = self.box_annotator.annotate(scene = frame, detections=detections)
+            cv2.putText(frame, f"{self.labels[0]}, conf: {confidence:0.2f}", (int(x1), int(y1-20)),
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
+        return frame    
+
+    def take_photo(self):
+        ret, frame = self.vid.read()
+        if ret:
+            filename = os.path.join(self.directories,f"photo_{datetime.datetime.now().strftime('%d%m_%Hh%Mm%Ss')}.jpg")
+            cv2.imwrite(filename, frame)
+            print(f"photo saved as {filename}")
+
+    def record(self):
+        if self.is_recording:
+            self.is_recording = False
+            if self.out:
+                self.out.release()
+                self.out = None
+            self.btn_record.config(text="Start Recording")
+            print("Recording stopped")
+        else:
+            self.is_recording = True
+            file_name = os.path.join(self.directories, f"video_{datetime.datetime.now().strftime('%d%M%Y_%Hh%Mm%Ss')}.avi")
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            frame_width = int(self.vid.get(cv2.CAP_PROP_FRAME_WIDTH))
+            frame_height = int(self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (frame_width, frame_height))
+            self.btn_record.config(text="Stop recording")
+            print(f"Recording started. Saving to {file_name}")
+        
+    def update(self):
+        ret, frame = self.vid.read()
+        frame = cv2.flip(frame, 1)
+        if ret:
+            start_time = time()
+
+            # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            results = self.predict(frame)
+            frame = self.plot_boxes(results, frame)
+            end_time = time()
+            if end_time - start_time != 0:
+                fps = 1/np.round(end_time - start_time, 2)
+            # print(fps)
+            cv2.putText(frame, f'FPS: {int(fps)}', (20,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+
+            if self.is_recording and self.out is not None:
+                self.out.write(frame)
+
+            frameS = cv2.resize(frame, (0, 0), None, 0.5, 0.5)
+            frameS = cv2.cvtColor(frameS, cv2.COLOR_BGR2RGB)
+
+            # faceLocs = face_recognition.face_locations(frameS)
+
+            # if faceLocs:
+            #     self.face_detected()
+            #     if self.show_box:
+            #         for faceLoc in faceLocs:
+            #             y1, x2, y2, x1 = faceLoc
+            #             y1, x2, y2, x1 = y1*2, x2*2, y2*2, x1*2
+            #             bbox = x1, y1, x2 - x1, y2 - y1
+            #             cvzone.cornerRect(frame, bbox, rt=0)
+            # else:
+            #     self.no_face_detected()
+
+
+            self.photo = ImageTk.PhotoImage(image=Image.fromarray(frame))
+            self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
+        self.window.after(10, self.update)   
+    def on_closing(self):
+        if self.is_recording:
+            self.is_recording = False
+            if self.out is not None:
+                self.out.release()
+                self.out = None
+        self.vid.release()
+        self.window.destroy()
 
 class ObjectDetection:
     def __init__(self, model, capture_index=0):
@@ -19,10 +200,6 @@ class ObjectDetection:
         self.CLASS_NAMES_DICT = self.model.model.names 
         self.box_annotator = BoxAnnotator(color=ColorPalette(colors=colors), thickness=3)
         
-    # def load_model(self):
-    #     model = YOLO("model/custom_train_yolov10s.pt")
-    #     model.fuse()
-        # return model
     def predict(self, frame):
         return self.model(frame)
     

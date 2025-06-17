@@ -20,14 +20,14 @@ class FirstLabel:
         self.current_frame = None
         self.model_type = model_type
         if self.model_type == "pt":
-            self.model_path = "model/training_with_6classes.pt" if self.model_path is None else self.model_path
+            self.model_path = "model/training_with_6classes.pt" if self.model_path is None else self.model_path  # specify your custom model path or it will use the default model in the working dir to run inference
             self.model = self.load_pytorch_model()
-            self.insert_textbox("Loading pytorch model for object detection")
+            self.insert_textbox(f"Loading pytorch model {self.model_path} for object detection")
         elif self.model_type == "rt":
             self.model_path = "model/custom_train_yolov10s_4.engine" if self.model_path is None else self.model_path
             self.yaml_path = "model/data.yaml" if self.yaml_path is None else self.yaml_path
             self.model = self.load_tensorrt_model()
-            self.insert_textbox("Loading tensorRT model for object detection")
+            self.insert_textbox(f"Loading tensorRT model {self.model_path} for object detection")
     def load_tensorrt_model(self):
         from model.running_tensorRT import TensorRTDetection
         self.tensorRT = TensorRTDetection(video_capture = self.video_capture, model_path = self.model_path, yaml_path=self.yaml_path)
