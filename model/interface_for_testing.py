@@ -8,10 +8,11 @@ from supervision import Detections, BoxAnnotator
 import tkinter as tk
 from tkinter import Button
 from PIL import ImageTk, Image
-import threading
 import datetime
 import os
 import sys
+# I don't know why every single time when I wanna import module from another folder, I would have to add the path of the parent folder to the system path. 
+# It is just so annoying, is there any other ways to do it quickly??
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 try:
     from PLC.plc_connection import PLCConnection

@@ -1,6 +1,13 @@
 from pymodbus.client.tcp import ModbusTcpClient as mbc
 from pymodbus.exceptions import ConnectionException
-# from  threading import Thread
+
+# from threading import Thread
+
+# This script defines PLC connection but the Python script is running as a client. This means that the PLC will be the server. 
+# Every single time when you wanna run it, you would have a PLC, connect it to the server first.
+# Then you can run this script to connect to the PLC and read/write data from/to it.
+# Now we will code another class to connect to ip address and port as a server, no need for the real PLC hardware. 
+
 class PLCConnection:
     def __init__(self, host='192.168.0.1', port=502):
         self.host = host
