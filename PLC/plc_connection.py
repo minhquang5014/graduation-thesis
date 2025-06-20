@@ -8,6 +8,9 @@ from pymodbus.exceptions import ConnectionException
 # Then you can run this script to connect to the PLC and read/write data from/to it.
 # Now we will code another class to connect to ip address and port as a server, no need for the real PLC hardware. 
 
+class PLCServer:
+    pass
+
 class PLCConnection:
     def __init__(self, host='192.168.0.1', port=502):
         self.host = host
