@@ -1,8 +1,6 @@
 from pymodbus.client.tcp import ModbusTcpClient as mbc
 from pymodbus.exceptions import ConnectionException
 
-# from threading import Thread
-
 # This script defines PLC connection but the Python script is running as a client. This means that the PLC will be the server. 
 # Every single time when you wanna run it, you would have a PLC, connect it to the server first.
 # Then you can run this script to connect to the PLC and read/write data from/to it.
@@ -21,7 +19,7 @@ class PLCConnection:
     def connectPLC(self):
         try:
             self.connect_status = self.client.connect()
-            print(self.connect_status)
+            print(self.connect_status) # False or True
             print(f"Connection to {self.host}:{self.port} is {'successful' if self.connect_status else 'failed'}")
             return self.connect_status
         except ConnectionException as e:

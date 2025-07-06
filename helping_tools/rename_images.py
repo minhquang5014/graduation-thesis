@@ -47,7 +47,7 @@ for idx, file in enumerate(temp_files, start=start_index):
     print(f"✅ {file.name} -> {new_name}")
 
 # === SPLIT INTO FOLDERS OF MAX 20MB ===
-folder_counter = 11
+folder_counter = 20
 current_folder = folder_path / f"new_set_{folder_counter}"
 current_folder.mkdir(exist_ok=True)
 current_size = 0

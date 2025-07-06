@@ -18,12 +18,12 @@ colors=[Color(r=255, g=64, b=64), Color(r=255, g=161, b=160)]
 
 class ObjectDetection:
     def __init__(self, model):
-        self.lower_red = np.array([0, 100, 100])
-        self.upper_red = np.array([12, 255, 255])
-        self.lower_green = np.array([30, 100, 100])
-        self.upper_green = np.array([92, 255, 255])
-        self.lower_blue = np.array([95, 120, 120])
-        self.upper_blue = np.array([130, 255, 255])
+        # self.lower_red = np.array([0, 100, 100])
+        # self.upper_red = np.array([12, 255, 255])
+        # self.lower_green = np.array([30, 100, 100])
+        # self.upper_green = np.array([92, 255, 255])
+        # self.lower_blue = np.array([95, 120, 120])
+        # self.upper_blue = np.array([130, 255, 255])
 
         self.device = 'cuda' if torch.cuda.is_available() else "cpu"
         self.model = YOLO(model)
@@ -78,7 +78,7 @@ class ObjectDetection:
         return frame, xyxys, class_ids
 
     def video(self):
-        cap = cv2.VideoCapture(2)
+        cap = cv2.VideoCapture(0)
         last_update_time = time()
         update_interval = 0.4
         assert cap.isOpened()
@@ -125,6 +125,6 @@ class ObjectDetection:
         cv2.destroyAllWindows()
 if __name__ == '__main__':
     # detector = ObjectDetection(capture_index=0)
-    detector = ObjectDetection(model = "model/training_with_6classes.pt")
+    detector = ObjectDetection(model = "model/best.pt")
     connect_plc = detector.connect_plc()
     detector.video()

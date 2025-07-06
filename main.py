@@ -27,12 +27,12 @@ class MainWindow(create_window.BiggerWindow):
         self.last_update_time = time()
         self.update_interval = 0.4
 
-        self.lower_red = np.array([0, 100, 100])
-        self.upper_red = np.array([12, 255, 255])
-        self.lower_green = np.array([30, 100, 100])
-        self.upper_green = np.array([92, 255, 255])
-        self.lower_blue = np.array([95, 120, 120])
-        self.upper_blue = np.array([130, 255, 255])
+        # self.lower_red = np.array([0, 100, 100])
+        # self.upper_red = np.array([12, 255, 255])
+        # self.lower_green = np.array([30, 100, 100])
+        # self.upper_green = np.array([92, 255, 255])
+        # self.lower_blue = np.array([95, 120, 120])
+        # self.upper_blue = np.array([130, 255, 255])
 
         self.connect_plc = PLCConnection(host = '192.168.0.1')
         self.connect_status = self.connect_plc.connectPLC()
@@ -166,26 +166,28 @@ class MainWindow(create_window.BiggerWindow):
             self.third.canvas1_obj.itemconfig(self.third.canvas_light1, fill="gray")
         else:
             self.third.canvas1_obj.itemconfig(self.third.canvas_light1, fill="green")
-        self.root.after(200, self.read_initial_light1)
+        self.root.after(400, self.read_initial_light1)
     def read_initial_light2(self):
         result_light2 = self.connect_plc.read(10)
         if result_light2 == 0:
             self.third.canvas2_obj.itemconfig(self.third.canvas_light2, fill = "gray")
         else:
             self.third.canvas2_obj.itemconfig(self.third.canvas_light2, fill="green")
+        self.root.after(400, self.read_initial_light2)
     def read_initial_light3(self):
         result_light3 = self.connect_plc.read(11)
         if result_light3 == 0:
             self.third.canvas3_obj.itemconfig(self.third.canvas_light3, fill = "gray")
         else:
             self.third.canvas3_obj.itemconfig(self.third.canvas_light3, fill="green")
+        self.root.after(400, self.read_initial_light3)
     def read_initial_light4(self):
         result_light4 = self.connect_plc.read(12)
         if result_light4 == 0:
             self.third.canvas4_obj.itemconfig(self.third.canvas_light4, fill = "gray")
         else:
             self.third.canvas4_obj.itemconfig(self.third.canvas_light4, fill="green")
-
+        self.root.after(400, self.read_initial_light4)
     def custom_start(self):
         self.fourth.insert_textbox(message="Pressing start. The program is now running, sending int to h_reg 3")
         self.connect_plc.write(4, 1)
@@ -205,11 +207,11 @@ class MainWindow(create_window.BiggerWindow):
         initial_stop_state = self.connect_plc.read(7)
         self.update_lights(initial_start_state, initial_stop_state)
     def update_lights(self, state1, state2):
-        if state1 == 1:
+        if state1 >= 1:
             self.second.lights_canvas_start.itemconfig(self.second.oval_start, fill = "green")
         else:
             self.second.lights_canvas_start.itemconfig(self.second.oval_start, fill = "gray")
-        if state2 == 1:
+        if state2 >= 1:
             self.second.lights_canvas_stop.itemconfig(self.second.oval_stop, fill = "red")
         else:
             self.second.lights_canvas_stop.itemconfig(self.second.oval_stop, fill = "gray")
@@ -581,5 +583,5 @@ class MainWindow(create_window.BiggerWindow):
 
 if __name__ == "__main__":
     # MainWindow(capture_index = "video/video_07332025_11h33m31s.avi")
-    MainWindow(capture_index = 2)
+    MainWindow(capture_index = 2) ## 0 is to open the laptop's webcam, 1 is for the camera frame from the phone, and 2 is for the camera connected to the laptop by USB
     

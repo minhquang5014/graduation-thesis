@@ -60,13 +60,13 @@ This is for writing or reading holding register:
 
 33. Check if Ng storage is full
 
-34. read if red object is recognized and processed
+<!-- 34. read if red object is recognized and processed
 
 35. read if green object is recognized and processed
 
 36. read if blue object is recognized and processed
 
-37. read if NG object is recognized and processed
+37. read if NG object is recognized and processed -->
 
 38. write manual "bang tai" 
 
